@@ -142,6 +142,485 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-golang 之 map" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/01/golang 之 map/">golang 之 map</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/01/golang 之 map/" class="archive-article-date">
+  	<time datetime="2019-07-01T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小</p>
+        
+          <a class="article-more-a" href="/2019/07/01/golang 之 map/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">map</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/golang//" class="article-tag-list-link color2">golang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/07/01/golang 之 map/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-redis 之 sds 三" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/redis 之 sds 三/">redis 之 sds 三</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/redis 之 sds 三/" class="archive-article-date">
+  	<time datetime="2019-06-29T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在阅读 SDS 的源码时,发现一个现象,所有的 sds 的 api 处理字符串的方式都是按照 c类型字符串进行处理的,也就是在字符串结尾处添加一个结束符 <code>\0</code>,  而在使用 redis 时,网上的资料都说是 redis 字符串是二进制安全的,也就是支持在字符串中间出现结束符<code>\0</code>,  但是这和实际源码有出入, 怀疑是不是 redis 对字符串做了处理. </p>
+        
+          <a class="article-more-a" href="/2019/06/29/redis 之 sds 三/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/redis 之 sds 三/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-redis 之 sds 二" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/28/redis 之 sds 二/">redis 之 sds 二</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/28/redis 之 sds 二/" class="archive-article-date">
+  	<time datetime="2019-06-28T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <a id="more"></a>
+<ol>
+<li>buf 缓冲区优化    </li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Like sdscatpritf() but gets va_list instead of being variadic. */</span></span><br><span class="line"><span class="function">sds <span class="title">sdscatvprintf</span><span class="params">(sds s, <span class="keyword">const</span> <span class="keyword">char</span> *fmt, va_list ap)</span> </span>&#123;</span><br><span class="line">    va_list cpy;</span><br><span class="line">    <span class="keyword">char</span> staticbuf[<span class="number">1024</span>], *buf = staticbuf, *t;</span><br><span class="line">    <span class="keyword">size_t</span> buflen = <span class="built_in">strlen</span>(fmt)*<span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* We try to start using a static buffer for speed.</span></span><br><span class="line"><span class="comment">     * If not possible we revert to heap allocation. */</span></span><br><span class="line">    <span class="keyword">if</span> (buflen &gt; <span class="keyword">sizeof</span>(staticbuf)) &#123;</span><br><span class="line">        buf = zmalloc(buflen);</span><br><span class="line">        <span class="keyword">if</span> (buf == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        buflen = <span class="keyword">sizeof</span>(staticbuf);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Try with buffers two times bigger every time we fail to</span></span><br><span class="line"><span class="comment">     * fit the string in the current buffer size. */</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        buf[buflen<span class="number">-2</span>] = <span class="string">'\0'</span>;</span><br><span class="line">        va_copy(cpy,ap);</span><br><span class="line">        <span class="comment">// T = O(N)</span></span><br><span class="line">        vsnprintf(buf, buflen, fmt, cpy);</span><br><span class="line">        <span class="keyword">if</span> (buf[buflen<span class="number">-2</span>] != <span class="string">'\0'</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (buf != staticbuf) zfree(buf);</span><br><span class="line">            buflen *= <span class="number">2</span>;</span><br><span class="line">            buf = zmalloc(buflen);</span><br><span class="line">            <span class="keyword">if</span> (buf == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Finally concat the obtained string to the SDS string and return it. */</span></span><br><span class="line">    t = sdscat(s, buf);</span><br><span class="line">    <span class="keyword">if</span> (buf != staticbuf) zfree(buf);</span><br><span class="line">    <span class="keyword">return</span> t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 redis 先使用堆栈分配一块大小为 1024byte 字节的内存, 如果大小不够, 在使用 zmalloc 函数从堆中分配一块大小足够的内存.<br>这么做的好处是,当在栈中分配的内存够用时,会节省去堆中非配内存的性能.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/28/redis 之 sds 二/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-redis 之 sds 一" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/27/redis 之 sds 一/">redis 之 sds 一</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/27/redis 之 sds 一/" class="archive-article-date">
+  	<time datetime="2019-06-27T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="SDS"><a href="#SDS" class="headerlink" title="SDS"></a>SDS</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>simple dynamtic string, 简单动态字符串</p>
+        
+          <a class="article-more-a" href="/2019/06/27/redis 之 sds 一/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/27/redis 之 sds 一/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-redis question" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/26/redis question/">redis question</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/26/redis question/" class="archive-article-date">
+  	<time datetime="2019-06-26T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前一直想看下 redis 源码</p>
+<p>方式主要是结合 <a href="http://redisbook.com/index.html" target="_blank" rel="noopener">redisbook</a> 这本书 和 redis 版本 3.0 源码</p>
+<p>想搞清楚的几个问题：</p>
+<ol>
+<li>redis 对象存储， 每种类型都是使用什么方式存储的？（之前看过原理</li>
+<li>redis 提供的几种数据类型都不是采用单一的存储模型）。</li>
+<li>redis 持久化和主从同步有啥关系？ 持久化是写日志， 主从同步也是写日志。</li>
+<li>redis 的网络模块是怎么接收请求的？之后又是怎么处理的？</li>
+<li>redis 数据过期是怎么实现的？</li>
+<li>redis 集合的交并集是怎么实现的？</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/26/redis question/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-ffmpeg 编译" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -163,46 +642,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><code>huifang-fencode</code>使用<code>ffmpeg</code>进行编码, 编译<code>ffmpeg</code>之前首先要编译<code>x264</code>, 见这个<a href="http://wiki.iyunxiao.com/pages/viewpage.action?pageId=353609706" target="_blank" rel="noopener">编译libx264</a></p>
-<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><ol>
-<li>下载 ffmpeg, <a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="noopener">github 地址</a>, <code>ffmpeg</code>选择 <code>n4.0.2</code>, <a href="https://github.com/FFmpeg/FFmpeg/releases/tag/n4.0.2" target="_blank" rel="noopener">传送门</a></li>
-<li>解压</li>
-</ol>
-<h3 id="配置-makefile"><a href="#配置-makefile" class="headerlink" title="配置 makefile"></a>配置 makefile</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">./configure \</span><br><span class="line">--<span class="built_in">enable</span>-nonfree \</span><br><span class="line">--prefix=/home/capp/Downloads/ffmpeg-n4.0.2/libs \</span><br><span class="line">--<span class="built_in">enable</span>-shared \</span><br><span class="line">--<span class="built_in">disable</span>-static \</span><br><span class="line">--<span class="built_in">enable</span>-gpl \</span><br><span class="line">--<span class="built_in">enable</span>-libx264 \</span><br><span class="line">--<span class="built_in">enable</span>-ffmpeg \</span><br><span class="line">--<span class="built_in">disable</span>-asm \</span><br><span class="line">--<span class="built_in">disable</span>-optimizations \</span><br><span class="line">--<span class="built_in">disable</span>-stripping</span><br></pre></td></tr></table></figure>
-
-<p><code>--prefix</code>: 指定安装路径<br>配置 makefile 遇到的一些问题参考问题记录里的内容</p>
-<h3 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p>编译安装之后遇到的问题</p>
-<h2 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h2><h3 id="1-配置-makefile-问题记录"><a href="#1-配置-makefile-问题记录" class="headerlink" title="1. 配置 makefile 问题记录:"></a>1. 配置 makefile 问题记录:</h3><hr>
-<ul>
-<li>上面的指令执行完成之后可能会报错</li>
-</ul>
-<hr>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ERROR: libx264 not found</span><br><span class="line">```    </span><br><span class="line">原因:  `libx264` 库没有找到      </span><br><span class="line">解决方法: 配置一下环境变量</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line"><span class="built_in">export</span> PKG_CONFIG_PATH=/home/capp/Downloads/x264/libs/lib/pkgconfig/</span><br></pre></td></tr></table></figure>
-
-<p>指定的路径就是<code>x264</code>的安装路径, 在<code>lib</code>目录下面的<code>pkgconfig</code>目录</p>
-<ul>
-<li>配置好环境变量再次执行<code>configure</code>指令, 还有可能会出错</li>
-</ul>
-<hr>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WARNING: using libfdk without pkg-config</span><br><span class="line">WARNING: using libx264 without pkg-config</span><br></pre></td></tr></table></figure>
-
-<p>这个问题我的解决方式是安装 <code>pkg-config</code> 这个安装包</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install pkg-config</span><br></pre></td></tr></table></figure>
-
-<p>在去执行 <code>configure</code> 就没有错误了</p>
-<h3 id="2-编译之后遇到的问题"><a href="#2-编译之后遇到的问题" class="headerlink" title="2. 编译之后遇到的问题"></a>2. 编译之后遇到的问题</h3><hr>
-<p>编译之后查看目标文件的链接情况 <code>ldd ffmpeg</code><br>看到的结果是有几个库没有找到链接库文件, 显示<code>xxx not found</code>, 但是库文件是存在的.<br>查找资料得知, 由于我们的编译安装路径是在自己的目录下, <code>ld</code> 链接找不到这个库文件, 需要将库的安装路径添加到 <code>ld config</code> 中.    </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编辑 /etc/ld.conf 文件</span></span><br><span class="line">vim /etc/ld.conf</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">include ld.so.conf.d/*.conf</span><br><span class="line">/home/capp/Downloads/x264/libs/lib</span><br><span class="line">/home/capp/Downloads/ffmpeg-n4.0.2/libs/lib</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 然后执行命令</span></span><br><span class="line">ldconfig</span><br></pre></td></tr></table></figure>
-
-<p>当然, 更好的方式不是编辑 <code>/etc/ld.conf</code> 文件, 而是在 <code>/etc/ld.conf.d/</code> 目录下创建一个属于自己的文件, 不过需要注意的是, 文件的结尾必须是以 <code>.conf</code> 为后缀.</p>
-<h4 id="最后说一下"><a href="#最后说一下" class="headerlink" title="最后说一下"></a>最后说一下</h4><p><code>pkg-config</code> 是一个第三方库的管理工具, 当需要引用第三方库时, 通常的做法是将库的头文件路径和库的路径都加到编译选项中, 如果使用 <code>pkg-config</code> 会帮我们省去这一步骤.<br>第三方库在编译完成之后会在 库的安装路径之下生成一个 <code>pkgconfig</code> 的目录, 如果编译的时候需要第三方库, 直接将这个目录的路径设置到 <code>PKG_CONFIG_PATH</code> 环境变量中, 在编译的时候会去自动查找第三方库.</p>
-<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p><a href="https://forum.ivorde.com/ffmpeg-error-while-loading-shared-libraries-libavdevice-so-52-cannot-open-shared-object-file-no-t129.html" target="_blank" rel="noopener">链接出错</a><br><a href="https://blog.csdn.net/luotuo44/article/details/24836901" target="_blank" rel="noopener">pkg-config 介绍</a></p>
-
+        
+          <a class="article-more-a" href="/2019/05/26/ffmpeg 编译/#more">more >></a>
+        
       
 
       
@@ -273,13 +715,13 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/26/x264 编译/">x264 编译</a>
+      <a class="article-title" href="/2019/05/25/x264 编译/">x264 编译</a>
     </h1>
   
 
         
-        <a href="/2019/05/26/x264 编译/" class="archive-article-date">
-  	<time datetime="2019-05-26T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-26</time>
+        <a href="/2019/05/25/x264 编译/" class="archive-article-date">
+  	<time datetime="2019-05-25T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-25</time>
 </a>
         
       </header>
@@ -287,15 +729,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="x264-编译"><a href="#x264-编译" class="headerlink" title="x264 编译"></a>x264 编译</h2><p>回放使用<code>ffmpeg</code>将图片数据编码为<code>h264</code>视频数据，<code>ffmpeg</code>本身没有<code>h264</code>格式的编码库，需要使用<code>libx264</code>这个库，所以编译<code>ffmpeg</code>之前需要先编译<code>x264</code>这个库。</p>
-<h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://code.videolan.org/videolan/x264.git</span><br></pre></td></tr></table></figure>
-
-<h4 id="配置-makefile"><a href="#配置-makefile" class="headerlink" title="配置 makefile"></a>配置 makefile</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">./configure \</span><br><span class="line">--prefix=/home/capp/Downloads/x264/libs \</span><br><span class="line">--<span class="built_in">enable</span>-shared \</span><br><span class="line">--<span class="built_in">disable</span>-static \</span><br><span class="line">--<span class="built_in">disable</span>-asm</span><br></pre></td></tr></table></figure>
-
-<p><code>--prefix</code>： 指定编译之后的安装目录</p>
-<h4 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<h4 id="source-code"><a href="#source-code" class="headerlink" title="source code"></a>source code</h4><p><a href="https://www.videolan.org/developers/x264.html" target="_blank" rel="noopener">libx264</a></p>
-
+        
+          <a class="article-more-a" href="/2019/05/25/x264 编译/#more">more >></a>
+        
       
 
       
@@ -333,7 +769,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/26/x264 编译/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/05/25/x264 编译/">展开全文 >></a>
         </p>
       
 
@@ -452,7 +888,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">sds</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">x264</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">map</a>
               </li>
             
             <div class="clearfix"></div>

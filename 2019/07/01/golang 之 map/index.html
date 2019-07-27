@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | write everything</title>
+  <title>golang 之 map | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="write everything">
-<meta property="og:url" content="http://yoursite.com/archives/2019/index.html">
+  <meta name="description" content="抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小">
+<meta name="keywords" content="golang,map">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang 之 map">
+<meta property="og:url" content="http://yoursite.com/2019/07/01/golang 之 map/index.html">
 <meta property="og:site_name" content="write everything">
+<meta property="og:description" content="抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小">
 <meta property="og:locale" content="c & golang">
+<meta property="og:updated_time" content="2019-07-27T15:25:47.586Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="write everything">
+<meta name="twitter:title" content="golang 之 map">
+<meta name="twitter:description" content="抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -140,36 +145,76 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-golang 之 map" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/01/golang 之 map/" class="archive-article-date">
-  	<time datetime="2019-07-01T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/01/golang 之 map/">golang 之 map</a>
+    <h1 class="article-title" itemprop="name">
+      golang 之 map
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/07/01/golang 之 map/" class="archive-article-date">
+  	<time datetime="2019-07-01T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小</p>
+<a id="more"></a>
+
+<p>下面先给出 hmap 的结构</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> hmap <span class="keyword">struct</span> &#123;</span><br><span class="line">	count     <span class="keyword">int</span> <span class="comment">// hmap 的大小(元素个数)</span></span><br><span class="line">	flags     <span class="keyword">uint8</span></span><br><span class="line">	B         <span class="keyword">uint8</span>  <span class="comment">//</span></span><br><span class="line">	noverflow <span class="keyword">uint16</span> <span class="comment">// approximate number of overflow buckets; see incrnoverflow for details</span></span><br><span class="line">	hash0     <span class="keyword">uint32</span> <span class="comment">// hash seed</span></span><br><span class="line"></span><br><span class="line">	buckets    unsafe.Pointer <span class="comment">// hmap 数组</span></span><br><span class="line">	oldbuckets unsafe.Pointer <span class="comment">// 扩容时指向旧的 buckets 数组</span></span><br><span class="line">	nevacuate  <span class="keyword">uintptr</span>    </span><br><span class="line"></span><br><span class="line">	extra *mapextra <span class="comment">// optional fields</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> mapextra <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// 如果一个 buckets 数组溢出了, 将溢出的数据做一个拉链, 放到 overflow 中</span></span><br><span class="line">    <span class="comment">// 每一个 buckets 数组最多放 8 个数据, const 中有个常量</span></span><br><span class="line">	overflow    *[]*bmap</span><br><span class="line">	oldoverflow *[]*bmap</span><br><span class="line"></span><br><span class="line">	<span class="comment">// nextOverflow holds a pointer to a free overflow bucket.</span></span><br><span class="line">	nextOverflow *bmap</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// A bucket for a Go map.</span></span><br><span class="line"><span class="keyword">type</span> bmap <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// tophash generally contains the top byte of the hash value</span></span><br><span class="line">	<span class="comment">// for each key in this bucket. If tophash[0] &lt; minTopHash,</span></span><br><span class="line">	<span class="comment">// tophash[0] is a bucket evacuation state instead.</span></span><br><span class="line">	tophash [bucketCnt]<span class="keyword">uint8</span></span><br><span class="line">	<span class="comment">// Followed by bucketCnt keys and then bucketCnt values.</span></span><br><span class="line">	<span class="comment">// <span class="doctag">NOTE:</span> packing all the keys together and then all the values together makes the</span></span><br><span class="line">	<span class="comment">// code a bit more complicated than alternating key/value/key/value/... but it allows</span></span><br><span class="line">	<span class="comment">// us to eliminate padding which would be needed for, e.g., map[int64]int8.</span></span><br><span class="line">	<span class="comment">// Followed by an overflow pointer.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>几个重要结构的含义:   </p>
+<p><code>hmap.B:</code> 可以理解为 buckets 数组中有有 2^B 个 bucket<br><code>hmap.buckets:</code> buckets 数组的指针, 每个 buckets 的大小是固定的, 一般为 8 个<br><code>mapextra.overflow:</code> 假设 buckets 中的数据冲突非常严重, 超出了 8 个,   buckets 指针就会指向 overflow 的 buckets 数组指针<br><code>bmap.tophash:</code> 暂时没看明白, 占个坑位</p>
+<h4 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h4><p>代码逻辑主要在  <code>mapaccess1</code> 中, 同时还会发现 有好几个 <code>mapaccess</code> 函数, 其实这几个函数的逻辑大致类似, 只是返回值略有不同, 可以对比一下.<br>记录一下主要逻辑和存在疑惑的一些点:     </p>
+<ol>
+<li>首先会通过一个通用的 hash 函数得到 hash 值, 然后使用 <code>bucketMask</code> 这个函数得到一个 mask 值, 再通过这个 mask 值去确定这个 hash 值在 buckets 数组中的位置(偏移量), 进而得到目标 bucket, 上代码:</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">alg := t.key.alg <span class="comment">// 这个应该是根据 map 中 key 的类型选择不同的 hash 函数</span></span><br><span class="line">hash := alg.hash(key, <span class="keyword">uintptr</span>(h.hash0))</span><br><span class="line">m := bucketMask(h.B)</span><br><span class="line">b := (*bmap)(add(h.buckets, (hash&amp;m)*<span class="keyword">uintptr</span>(t.bucketsize)))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// bucketShift returns 1&lt;&lt;b, optimized for code generation.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">bucketShift</span><span class="params">(b <span class="keyword">uint8</span>)</span> <span class="title">uintptr</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> sys.GoarchAmd64|sys.GoarchAmd64p32|sys.Goarch386 != <span class="number">0</span> &#123;</span><br><span class="line">        b &amp;= sys.PtrSize*<span class="number">8</span> - <span class="number">1</span> <span class="comment">// help x86 archs remove shift overflow checks</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">uintptr</span>(<span class="number">1</span>) &lt;&lt; b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bucketMask returns 1&lt;&lt;b - 1, optimized for code generation.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">bucketMask</span><span class="params">(b <span class="keyword">uint8</span>)</span> <span class="title">uintptr</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> bucketShift(b) - <span class="number">1</span>   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 h.B 计算 mask, 应该是为了避免 hash 的值超出 buckets 数组的大小<br>这样计算之后, <code>(hash&amp;m)</code>的最大值为 <code>2^B - 1</code></p>
+<ol start="2">
+<li>计算 tophash 值    </li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top := tophash(hash)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tophash calculates the tophash value for hash.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">tophash</span><span class="params">(hash <span class="keyword">uintptr</span>)</span> <span class="title">uint8</span></span> &#123;</span><br><span class="line">    top := <span class="keyword">uint8</span>(hash &gt;&gt; (sys.PtrSize*<span class="number">8</span> - <span class="number">8</span>))</span><br><span class="line">    <span class="keyword">if</span> top &lt; minTopHash &#123;</span><br><span class="line">        top += minTopHash</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> top</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个应该是取 hash 值得最高 8 位, 使用 8 位 hash 值比较, 避免全量比较.</p>
+<ol start="3">
+<li>遍历 bucket</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">bucketloop:</span><br><span class="line"><span class="comment">// 如果有溢出</span></span><br><span class="line"><span class="keyword">for</span> ; b != <span class="literal">nil</span>; b = b.overflow(t) &#123;</span><br><span class="line">    <span class="comment">// 遍历一个 bucket</span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">uintptr</span>(<span class="number">0</span>); i &lt; bucketCnt; i++ &#123;</span><br><span class="line">        <span class="comment">// 判断一下 tophash 是否相等</span></span><br><span class="line">        <span class="keyword">if</span> b.tophash[i] != top &#123;</span><br><span class="line">            <span class="comment">// bucket 没有值</span></span><br><span class="line">            <span class="keyword">if</span> b.tophash[i] == emptyRest &#123;</span><br><span class="line">                <span class="keyword">break</span> bucketloop</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        k := add(unsafe.Pointer(b), dataOffset+i*<span class="keyword">uintptr</span>(t.keysize))</span><br><span class="line">        <span class="keyword">if</span> t.indirectkey() &#123;</span><br><span class="line">            k = *((*unsafe.Pointer)(k))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> alg.equal(key, k) &#123;</span><br><span class="line">            v := add(unsafe.Pointer(b), dataOffset+bucketCnt*<span class="keyword">uintptr</span>(t.keysize)+i*<span class="keyword">uintptr</span>(t.valuesize))</span><br><span class="line">            <span class="keyword">if</span> t.indirectvalue() &#123;</span><br><span class="line">                v = *((*unsafe.Pointer)(v))</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> v</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先使用 <code>tophash</code> 的值比较是否相等, 然后在使用比较 key 值是否相等.</p>
+<h4 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h4><p>直接上代码吧</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> h.flags&amp;hashWriting != <span class="number">0</span> &#123;</span><br><span class="line">    throw(<span class="string">"concurrent map writes"</span>)</span><br><span class="line">&#125;</span><br><span class="line">alg := t.key.alg</span><br><span class="line">hash := alg.hash(key, <span class="keyword">uintptr</span>(h.hash0))</span><br><span class="line"></span><br><span class="line"><span class="comment">// Set hashWriting after calling alg.hash, since alg.hash may panic,</span></span><br><span class="line"><span class="comment">// in which case we have not actually done a write.</span></span><br><span class="line">h.flags ^= hashWriting</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> h.buckets == <span class="literal">nil</span> &#123;</span><br><span class="line">    h.buckets = newobject(t.bucket) <span class="comment">// newarray(t.bucket, 1)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先判断是否是写状态, 如果有其他 goroutine 在写, 直接 panic<br>调用 hash 函数, 设置读标志位, 如果 buckets 为空, 则先创建一个</p>
+<hr>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bucket := hash &amp; bucketMask(h.B)</span><br><span class="line"><span class="keyword">if</span> h.growing() &#123;</span><br><span class="line">    growWork(t, h, bucket)</span><br><span class="line">&#125;</span><br><span class="line">b := (*bmap)(unsafe.Pointer(<span class="keyword">uintptr</span>(h.buckets) + bucket*<span class="keyword">uintptr</span>(t.bucketsize)))</span><br><span class="line">top := tophash(hash)</span><br></pre></td></tr></table></figure>
+
+<p>计算 bucket mask<br>如果当前 map 正在扩容, 先执行一次扩容计划<br>计算偏移地址, 计算 tophash</p>
+<hr>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="comment">// 循环遍历一个 bucket</span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">uintptr</span>(<span class="number">0</span>); i &lt; bucketCnt; i++ &#123;</span><br><span class="line">        <span class="comment">// 判断 tophash 是否相等</span></span><br><span class="line">        <span class="keyword">if</span> b.tophash[i] != top &#123;</span><br><span class="line">            <span class="keyword">if</span> isEmpty(b.tophash[i]) &amp;&amp; inserti == <span class="literal">nil</span> &#123;</span><br><span class="line">                inserti = &amp;b.tophash[i]</span><br><span class="line">                insertk = add(unsafe.Pointer(b), dataOffset+i*<span class="keyword">uintptr</span>(t.keysize))</span><br><span class="line">                val = add(unsafe.Pointer(b), dataOffset+bucketCnt*<span class="keyword">uintptr</span>(t.keysize)+i*<span class="keyword">uintptr</span>(t.valuesize))</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> b.tophash[i] == emptyRest &#123;</span><br><span class="line">                <span class="keyword">break</span> bucketloop</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果 tophash 相等</span></span><br><span class="line">        <span class="comment">// 计算 key 的偏移量</span></span><br><span class="line">        k := add(unsafe.Pointer(b), dataOffset+i*<span class="keyword">uintptr</span>(t.keysize))</span><br><span class="line">        <span class="keyword">if</span> t.indirectkey() &#123;</span><br><span class="line">            k = *((*unsafe.Pointer)(k))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 判断 key 是否相等</span></span><br><span class="line">        <span class="keyword">if</span> !alg.equal(key, k) &#123;</span><br><span class="line">            <span class="comment">// 不相等, 冲突了, 继续 遍历</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// already have a mapping for key. Update it.</span></span><br><span class="line">        <span class="keyword">if</span> t.needkeyupdate() &#123;</span><br><span class="line">            typedmemmove(t.key, k, key)</span><br><span class="line">        &#125;</span><br><span class="line">        val = add(unsafe.Pointer(b), dataOffset+bucketCnt*<span class="keyword">uintptr</span>(t.keysize)+i*<span class="keyword">uintptr</span>(t.valuesize))</span><br><span class="line">        <span class="keyword">goto</span> done</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// bucket 溢出桶</span></span><br><span class="line">    ovf := b.overflow(t)</span><br><span class="line">    <span class="keyword">if</span> ovf == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">    b = ovf</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h4>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -185,7 +230,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -198,343 +243,117 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/01/golang 之 map/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/29/redis 之 sds 三/" class="archive-article-date">
-  	<time datetime="2019-06-29T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/06/29/redis 之 sds 三/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">redis 之 sds 三</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/29/redis 之 sds 三/">redis 之 sds 三</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#查询数据"><span class="toc-number">1.</span> <span class="toc-text">查询数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#插入数据"><span class="toc-number">2.</span> <span class="toc-text">插入数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除"><span class="toc-number">3.</span> <span class="toc-text">删除</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/28/redis 之 sds 二/" class="archive-article-date">
-  	<time datetime="2019-06-28T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/28/redis 之 sds 二/">redis 之 sds 二</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/27/redis 之 sds 一/" class="archive-article-date">
-  	<time datetime="2019-06-27T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-27</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/27/redis 之 sds 一/">redis 之 sds 一</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/26/redis question/" class="archive-article-date">
-  	<time datetime="2019-06-26T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/26/redis question/">redis question</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/05/26/ffmpeg 编译/" class="archive-article-date">
-  	<time datetime="2019-05-26T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/05/26/ffmpeg 编译/">ffmpeg 编译</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">ffmpeg</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/音视频//" class="article-tag-list-link color4">音视频</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/05/25/x264 编译/" class="archive-article-date">
-  	<time datetime="2019-05-25T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/05/25/x264 编译/">x264 编译</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">ffmpeg</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">x264</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/音视频//" class="article-tag-list-link color4">音视频</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -557,8 +376,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
