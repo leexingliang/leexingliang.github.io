@@ -7,13 +7,17 @@
   
   <title>Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
+  <meta name="description" content="ffmpeg 编译 huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264 准备 下载 ffmpeg, github 地址, ffmpeg选择 n4.0.2, 传送门 解压  配置 makefile1234567891011./configure \--enable-nonfree \--prefix=/home/capp/Do">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://yoursite.com/2019/06/27/ffmpeg 编译/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="ffmpeg 编译 huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264 准备 下载 ffmpeg, github 地址, ffmpeg选择 n4.0.2, 传送门 解压  配置 makefile1234567891011./configure \--enable-nonfree \--prefix=/home/capp/Do">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-27T13:29:15.287Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="ffmpeg 编译 huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264 准备 下载 ffmpeg, github 地址, ffmpeg选择 n4.0.2, 传送门 解压  配置 makefile1234567891011./configure \--enable-nonfree \--prefix=/home/capp/Do">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -60,9 +64,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-ffmpeg 编译" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-ffmpeg 编译" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/27/ffmpeg 编译/" class="article-date">
   <time datetime="2019-06-27T08:57:11.849Z" itemprop="datePublished">2019-06-27</time>
@@ -125,46 +127,19 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-x264 编译" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/27/x264 编译/" class="article-date">
-  <time datetime="2019-06-27T08:02:09.300Z" itemprop="datePublished">2019-06-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="x264-编译"><a href="#x264-编译" class="headerlink" title="x264 编译"></a>x264 编译</h2><p>回放使用<code>ffmpeg</code>将图片数据编码为<code>h264</code>视频数据，<code>ffmpeg</code>本身没有<code>h264</code>格式的编码库，需要使用<code>libx264</code>这个库，所以编译<code>ffmpeg</code>之前需要先编译<code>x264</code>这个库。</p>
-<h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://code.videolan.org/videolan/x264.git</span><br></pre></td></tr></table></figure>
+  
+    <a href="/2019/06/27/x264 编译/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
 
-<h4 id="配置-makefile"><a href="#配置-makefile" class="headerlink" title="配置 makefile"></a>配置 makefile</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">./configure \</span><br><span class="line">--prefix=/home/capp/Downloads/x264/libs \</span><br><span class="line">--<span class="built_in">enable</span>-shared \</span><br><span class="line">--<span class="built_in">disable</span>-static \</span><br><span class="line">--<span class="built_in">disable</span>-asm</span><br></pre></td></tr></table></figure>
-
-<p><code>--prefix</code>： 指定编译之后的安装目录</p>
-<h4 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<h4 id="source-code"><a href="#source-code" class="headerlink" title="source code"></a>source code</h4><p><a href="https://www.videolan.org/developers/x264.html" target="_blank" rel="noopener">libx264</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/27/x264 编译/" data-id="cjylbhvcc0000g2nbdqi3npeg" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-  
-
 
 </section>
         
