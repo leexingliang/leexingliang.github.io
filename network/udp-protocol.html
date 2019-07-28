@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>redis 之 sds 二 | write everything</title>
+  <title>传输层协议 之 UDP | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="buf 缓冲区优化      12345678910111213141516171819202122232425262728293031323334353637/* Like sdscatpritf() but gets va_list instead of being variadic. */sds sdscatvprintf(sds s, const char *fmt, va_list">
-<meta name="keywords" content="redis,sds">
+  <meta name="description" content="传输层协议主要有两个， TCP 和 UDP， 两个大名鼎鼎的协议类型，做过应用层开发的应该都知道。。">
+<meta name="keywords" content="网络,udp">
 <meta property="og:type" content="article">
-<meta property="og:title" content="redis 之 sds 二">
-<meta property="og:url" content="http://yoursite.com/redis/redis 之 sds 二.html">
+<meta property="og:title" content="传输层协议 之 UDP">
+<meta property="og:url" content="http://yoursite.com/network/udp-protocol.html">
 <meta property="og:site_name" content="write everything">
-<meta property="og:description" content="buf 缓冲区优化      12345678910111213141516171819202122232425262728293031323334353637/* Like sdscatpritf() but gets va_list instead of being variadic. */sds sdscatvprintf(sds s, const char *fmt, va_list">
+<meta property="og:description" content="传输层协议主要有两个， TCP 和 UDP， 两个大名鼎鼎的协议类型，做过应用层开发的应该都知道。。">
 <meta property="og:locale" content="c & golang">
-<meta property="og:updated_time" content="2019-07-28T01:55:46.342Z">
+<meta property="og:updated_time" content="2019-07-28T04:53:23.112Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="redis 之 sds 二">
-<meta name="twitter:description" content="buf 缓冲区优化      12345678910111213141516171819202122232425262728293031323334353637/* Like sdscatpritf() but gets va_list instead of being variadic. */sds sdscatvprintf(sds s, const char *fmt, va_list">
+<meta name="twitter:title" content="传输层协议 之 UDP">
+<meta name="twitter:description" content="传输层协议主要有两个， TCP 和 UDP， 两个大名鼎鼎的协议类型，做过应用层开发的应该都知道。。">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -169,33 +169,42 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-redis 之 sds 二" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-udp-protocol" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      redis 之 sds 二
+      传输层协议 之 UDP
     </h1>
   
 
         
-        <a href="/redis/redis 之 sds 二.html" class="archive-article-date">
-  	<time datetime="2019-06-28T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-28</time>
+        <a href="/network/udp-protocol.html" class="archive-article-date">
+  	<time datetime="2019-07-28T04:53:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <a id="more"></a>
-<ol>
-<li>buf 缓冲区优化    </li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Like sdscatpritf() but gets va_list instead of being variadic. */</span></span><br><span class="line"><span class="function">sds <span class="title">sdscatvprintf</span><span class="params">(sds s, <span class="keyword">const</span> <span class="keyword">char</span> *fmt, va_list ap)</span> </span>&#123;</span><br><span class="line">    va_list cpy;</span><br><span class="line">    <span class="keyword">char</span> staticbuf[<span class="number">1024</span>], *buf = staticbuf, *t;</span><br><span class="line">    <span class="keyword">size_t</span> buflen = <span class="built_in">strlen</span>(fmt)*<span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* We try to start using a static buffer for speed.</span></span><br><span class="line"><span class="comment">     * If not possible we revert to heap allocation. */</span></span><br><span class="line">    <span class="keyword">if</span> (buflen &gt; <span class="keyword">sizeof</span>(staticbuf)) &#123;</span><br><span class="line">        buf = zmalloc(buflen);</span><br><span class="line">        <span class="keyword">if</span> (buf == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        buflen = <span class="keyword">sizeof</span>(staticbuf);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Try with buffers two times bigger every time we fail to</span></span><br><span class="line"><span class="comment">     * fit the string in the current buffer size. */</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        buf[buflen<span class="number">-2</span>] = <span class="string">'\0'</span>;</span><br><span class="line">        va_copy(cpy,ap);</span><br><span class="line">        <span class="comment">// T = O(N)</span></span><br><span class="line">        vsnprintf(buf, buflen, fmt, cpy);</span><br><span class="line">        <span class="keyword">if</span> (buf[buflen<span class="number">-2</span>] != <span class="string">'\0'</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (buf != staticbuf) zfree(buf);</span><br><span class="line">            buflen *= <span class="number">2</span>;</span><br><span class="line">            buf = zmalloc(buflen);</span><br><span class="line">            <span class="keyword">if</span> (buf == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Finally concat the obtained string to the SDS string and return it. */</span></span><br><span class="line">    t = sdscat(s, buf);</span><br><span class="line">    <span class="keyword">if</span> (buf != staticbuf) zfree(buf);</span><br><span class="line">    <span class="keyword">return</span> t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到 redis 先使用堆栈分配一块大小为 1024byte 字节的内存, 如果大小不够, 在使用 zmalloc 函数从堆中分配一块大小足够的内存.<br>这么做的好处是,当在栈中分配的内存够用时,会节省去堆中非配内存的性能.</p>
+        <p>传输层协议主要有两个， TCP 和 UDP， 两个大名鼎鼎的协议类型，做过应用层开发的应该都知道。。      </p>
+<a id="more"></a>
+<p>这两个协议都工作在传输层， 他们又有什么区别呢？<br>tcp是面向连接的， udp是无连接的。<br>啥是连接啊？ 连接就是，两台电脑在通信之前，需要先经过一些复杂的步骤，建立起一系列的数据结构，来支持两台电脑之间的通信，  来维护双方的交互状态， 用这样的数据结构来保证所谓的面向连接的特性。</p>
+<p>tcp是面向字节流的，udp是面向数据报的。<br>什么是流？ 个人理解是一连串的数据<br>tcp 发送的是一个流，没有头没有尾。但是我们都知道下一层 IP 是没有流的概念，是一个数据包一个数据包的发， tcp 流的概念是 tcp 协议自己维护的。<br>流的概念比数据报的概念多了一个顺序性，udp 只管发送和接收数据包，不关心包的顺序，而 tcp 除了接收数据包，还需要保证数据包的顺序性和完整性。</p>
+<p>tcp是可靠的，udp不可靠。<br>tcp通过超时重传，拥塞控制，滑动窗口等策略来保证每一个数据包都送达到目标机器，udp只关心发包，其他的不关心。<br>通过tcp连接传输的数据，无差错、不丢失、顺序到达。<br>tcp 是有状态的，记录了每一个的收发情况，已发送、已收到回执、以丢失需要重发等等     </p>
+<hr>
+<p>UDP的特点：   </p>
+<ul>
+<li>沟通简单。不需要一大堆的数据结构来维护双方的连接状态， 相信网络环境是非常好的，只管发包</li>
+<li>谁都可以给我发东西。使用 udp 监听一个端口，不管是谁，都可以给我发数据</li>
+<li>粗暴。不管网络是否拥堵，只要我有数据需要发送，只管往网络中丢数据包<br>UDP 的一些应用场景：</li>
+<li>资源少，网络情况比较好的内网中，或者对于丢包不是很敏感的网络环境</li>
+<li>应用在一些低延迟、容许部分丢包的实时场景， 比如实时直播</li>
+<li>广播的场景，不需要一对一沟通建立连接，而是广播的场景。 主要是依据 UDP 不面向连接，使得 UDP 可以承载广播或多播的协议，比如 DHCP</li>
+<li></li>
+</ul>
 
       
 
@@ -209,11 +218,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">udp</a>
         		</li>
       		
 		</ul>
@@ -225,7 +234,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
+        			<a href="/categories/network//" class="article-tag-list-link color3">network</a>
         		</li>
       		
 		</ul>
@@ -280,7 +289,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/redis/redis 之 sds 二.html" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/network/udp-protocol.html" alt="微信分享二维码">
     </div>
 </div>
 
@@ -294,18 +303,9 @@
   
 <nav id="article-nav">
   
-    <a href="/redis/redis 之 sds 三.html" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          redis 之 sds 三
-        
-      </div>
-    </a>
   
-  
-    <a href="/redis/redis 之 sds 一.html" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">redis 之 sds 一</div>
+    <a href="/network/tcp-protocol-2.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">传输层协议 之 TCP 二</div>
       <i class="icon-circle-right"></i>
     </a>
   
