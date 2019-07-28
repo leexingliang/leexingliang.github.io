@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>redis 之 sds 一 | write everything</title>
+  <title>ffmpeg 编译 | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="SDS介绍simple dynamtic string, 简单动态字符串">
-<meta name="keywords" content="redis,源码,sds">
+  <meta name="description" content="huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264">
+<meta name="keywords" content="ffmpeg">
 <meta property="og:type" content="article">
-<meta property="og:title" content="redis 之 sds 一">
-<meta property="og:url" content="http://yoursite.com/2019/06/27/redis 之 sds 一/index.html">
+<meta property="og:title" content="ffmpeg 编译">
+<meta property="og:url" content="http://yoursite.com/ffmpeg/ffmpeg 编译.html">
 <meta property="og:site_name" content="write everything">
-<meta property="og:description" content="SDS介绍simple dynamtic string, 简单动态字符串">
+<meta property="og:description" content="huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264">
 <meta property="og:locale" content="c & golang">
-<meta property="og:updated_time" content="2019-07-27T15:26:18.519Z">
+<meta property="og:updated_time" content="2019-07-28T01:54:47.893Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="redis 之 sds 一">
-<meta name="twitter:description" content="SDS介绍simple dynamtic string, 简单动态字符串">
+<meta name="twitter:title" content="ffmpeg 编译">
+<meta name="twitter:description" content="huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -60,9 +60,9 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/tags/redis/">redis</a></li>
+				<li><a href="/categories/redis/">redis</a></li>
 	        
-				<li><a href="/tags/golang/">golang</a></li>
+				<li><a href="/categories/golang/">golang</a></li>
 	        
 			</ul>
 		</nav>
@@ -128,9 +128,9 @@
 				
 					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/redis/">redis</a></li>
+					<li style="width: 33.333333333333336%"><a href="/categories/redis/">redis</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/golang/">golang</a></li>
+					<li style="width: 33.333333333333336%"><a href="/categories/golang/">golang</a></li>
 		        
 				</ul>
 			</nav>
@@ -145,38 +145,67 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-redis 之 sds 一" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-ffmpeg 编译" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      redis 之 sds 一
+      ffmpeg 编译
     </h1>
   
 
         
-        <a href="/2019/06/27/redis 之 sds 一/" class="archive-article-date">
-  	<time datetime="2019-06-27T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-27</time>
+        <a href="/ffmpeg/ffmpeg 编译.html" class="archive-article-date">
+  	<time datetime="2019-05-26T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="SDS"><a href="#SDS" class="headerlink" title="SDS"></a>SDS</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>simple dynamtic string, 简单动态字符串</p>
+        <p><code>huifang-fencode</code>使用<code>ffmpeg</code>进行编码, 编译<code>ffmpeg</code>之前首先要编译<code>x264</code>, 见这个<a href="http://wiki.iyunxiao.com/pages/viewpage.action?pageId=353609706" target="_blank" rel="noopener">编译libx264</a></p>
 <a id="more"></a>
-<p>redis 并没有使用 c语言的字符串作为 redis 的字符串类型，而是构建了 SDS 作为 redis 默认的字符串存储类型。</p>
-<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><h4 id="redis-定义"><a href="#redis-定义" class="headerlink" title="redis 定义"></a>redis 定义</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="comment">// buf 中已占用空间的长度</span></span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="comment">// buf 中剩余可用空间的长度</span></span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="comment">// 数据空间</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>redis <code>sds.buf</code> 沿用了 C语言 字符串的风格，以 <code>\0</code> 结尾， 这就保证了 redis 能够复用大部分 C 库里的函数，而不需要重新一份。</p>
-<h4 id="SDS-和-C-字符串的区别"><a href="#SDS-和-C-字符串的区别" class="headerlink" title="SDS 和 C 字符串的区别"></a>SDS 和 C 字符串的区别</h4><ol>
-<li>安全性， redis 通过 len 属性来记录 buf 的长度和 free 属性来记录 buf 中剩余的空间数量，当需要追加字符串时，可以根据 free 属性来判断是否能容纳新的字符串， 而不是像 C字符串那样以 <code>\0</code> 为拷贝结束标志， 容易造成缓冲区溢出。</li>
-<li>常数复杂度获取字符串长度， redis 获取字符串长度是 <code>O(1)</code> ,C字符串是 <code>O(n)</code>。</li>
-<li>效率，redis 通过内存预分配方式来减少内存分配的次数，提高效率； 惰性释放</li>
-<li>二进制安全，redis 虽然沿用了 C字符串的风格，在结尾处以 <code>\0</code> 结尾， 但是 redis 读取数据并不是以 <code>\0</code> 为标识来读， 而是按照 <code>len</code> 长度来读 ，所以 redis 可以存放任意的二进制数据</li>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><ol>
+<li>下载 ffmpeg, <a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="noopener">github 地址</a>, <code>ffmpeg</code>选择 <code>n4.0.2</code>, <a href="https://github.com/FFmpeg/FFmpeg/releases/tag/n4.0.2" target="_blank" rel="noopener">传送门</a></li>
+<li>解压</li>
 </ol>
+<h3 id="配置-makefile"><a href="#配置-makefile" class="headerlink" title="配置 makefile"></a>配置 makefile</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">./configure \</span><br><span class="line">--<span class="built_in">enable</span>-nonfree \</span><br><span class="line">--prefix=/home/capp/Downloads/ffmpeg-n4.0.2/libs \</span><br><span class="line">--<span class="built_in">enable</span>-shared \</span><br><span class="line">--<span class="built_in">disable</span>-static \</span><br><span class="line">--<span class="built_in">enable</span>-gpl \</span><br><span class="line">--<span class="built_in">enable</span>-libx264 \</span><br><span class="line">--<span class="built_in">enable</span>-ffmpeg \</span><br><span class="line">--<span class="built_in">disable</span>-asm \</span><br><span class="line">--<span class="built_in">disable</span>-optimizations \</span><br><span class="line">--<span class="built_in">disable</span>-stripping</span><br></pre></td></tr></table></figure>
+
+<p><code>--prefix</code>: 指定安装路径<br>配置 makefile 遇到的一些问题参考问题记录里的内容</p>
+<h3 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p>编译安装之后遇到的问题</p>
+<h2 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h2><h3 id="1-配置-makefile-问题记录"><a href="#1-配置-makefile-问题记录" class="headerlink" title="1. 配置 makefile 问题记录:"></a>1. 配置 makefile 问题记录:</h3><hr>
+<ul>
+<li>上面的指令执行完成之后可能会报错</li>
+</ul>
+<hr>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ERROR: libx264 not found</span><br><span class="line">```    </span><br><span class="line">原因:  `libx264` 库没有找到      </span><br><span class="line">解决方法: 配置一下环境变量</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line"><span class="built_in">export</span> PKG_CONFIG_PATH=/home/capp/Downloads/x264/libs/lib/pkgconfig/</span><br></pre></td></tr></table></figure>
+
+<p>指定的路径就是<code>x264</code>的安装路径, 在<code>lib</code>目录下面的<code>pkgconfig</code>目录</p>
+<ul>
+<li>配置好环境变量再次执行<code>configure</code>指令, 还有可能会出错</li>
+</ul>
+<hr>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WARNING: using libfdk without pkg-config</span><br><span class="line">WARNING: using libx264 without pkg-config</span><br></pre></td></tr></table></figure>
+
+<p>这个问题我的解决方式是安装 <code>pkg-config</code> 这个安装包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install pkg-config</span><br></pre></td></tr></table></figure>
+
+<p>在去执行 <code>configure</code> 就没有错误了</p>
+<h3 id="2-编译之后遇到的问题"><a href="#2-编译之后遇到的问题" class="headerlink" title="2. 编译之后遇到的问题"></a>2. 编译之后遇到的问题</h3><hr>
+<p>编译之后查看目标文件的链接情况 <code>ldd ffmpeg</code><br>看到的结果是有几个库没有找到链接库文件, 显示<code>xxx not found</code>, 但是库文件是存在的.<br>查找资料得知, 由于我们的编译安装路径是在自己的目录下, <code>ld</code> 链接找不到这个库文件, 需要将库的安装路径添加到 <code>ld config</code> 中.    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编辑 /etc/ld.conf 文件</span></span><br><span class="line">vim /etc/ld.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">include ld.so.conf.d/*.conf</span><br><span class="line">/home/capp/Downloads/x264/libs/lib</span><br><span class="line">/home/capp/Downloads/ffmpeg-n4.0.2/libs/lib</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 然后执行命令</span></span><br><span class="line">ldconfig</span><br></pre></td></tr></table></figure>
+
+<p>当然, 更好的方式不是编辑 <code>/etc/ld.conf</code> 文件, 而是在 <code>/etc/ld.conf.d/</code> 目录下创建一个属于自己的文件, 不过需要注意的是, 文件的结尾必须是以 <code>.conf</code> 为后缀.</p>
+<h4 id="最后说一下"><a href="#最后说一下" class="headerlink" title="最后说一下"></a>最后说一下</h4><p><code>pkg-config</code> 是一个第三方库的管理工具, 当需要引用第三方库时, 通常的做法是将库的头文件路径和库的路径都加到编译选项中, 如果使用 <code>pkg-config</code> 会帮我们省去这一步骤.<br>第三方库在编译完成之后会在 库的安装路径之下生成一个 <code>pkgconfig</code> 的目录, 如果编译的时候需要第三方库, 直接将这个目录的路径设置到 <code>PKG_CONFIG_PATH</code> 环境变量中, 在编译的时候会去自动查找第三方库.</p>
+<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p><a href="https://forum.ivorde.com/ffmpeg-error-while-loading-shared-libraries-libavdevice-so-52-cannot-open-shared-object-file-no-t129.html" target="_blank" rel="noopener">链接出错</a><br><a href="https://blog.csdn.net/luotuo44/article/details/24836901" target="_blank" rel="noopener">pkg-config 介绍</a></p>
 
       
 
@@ -190,15 +219,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">ffmpeg</a>
         		</li>
       		
 		</ul>
@@ -210,7 +231,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
+        			<a href="/categories/ffmpeg//" class="article-tag-list-link color2">ffmpeg</a>
         		</li>
       		
 		</ul>
@@ -265,7 +286,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/06/27/redis 之 sds 一/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/ffmpeg/ffmpeg 编译.html" alt="微信分享二维码">
     </div>
 </div>
 
@@ -279,18 +300,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/06/28/redis 之 sds 二/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/redis/redis question.html" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          redis 之 sds 二
+          redis question
         
       </div>
     </a>
   
   
-    <a href="/2019/06/26/redis question/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">redis question</div>
+    <a href="/ffmpeg/x264 编译.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">x264 编译</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -317,7 +338,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SDS"><span class="toc-number">1.</span> <span class="toc-text">SDS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#介绍"><span class="toc-number">1.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#定义"><span class="toc-number">1.2.</span> <span class="toc-text">定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#redis-定义"><span class="toc-number">1.2.1.</span> <span class="toc-text">redis 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SDS-和-C-字符串的区别"><span class="toc-number">1.2.2.</span> <span class="toc-text">SDS 和 C 字符串的区别</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#准备"><span class="toc-number">1.</span> <span class="toc-text">准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-makefile"><span class="toc-number">2.</span> <span class="toc-text">配置 makefile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译安装"><span class="toc-number">3.</span> <span class="toc-text">编译安装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题记录"><span class="toc-number"></span> <span class="toc-text">问题记录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-配置-makefile-问题记录"><span class="toc-number">1.</span> <span class="toc-text">1. 配置 makefile 问题记录:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-编译之后遇到的问题"><span class="toc-number">2.</span> <span class="toc-text">2. 编译之后遇到的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#最后说一下"><span class="toc-number">2.1.</span> <span class="toc-text">最后说一下</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参考链接"><span class="toc-number">2.2.</span> <span class="toc-text">参考链接</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -425,11 +446,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color2">golang</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+                <a href="javascript:void(0)" class="js-tag color4">map</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">标签</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">url</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -438,14 +475,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">x264</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">map</a>
               </li>
             
             <div class="clearfix"></div>

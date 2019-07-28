@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>golang 之 map | write everything</title>
+  <title>hexo 使用标签用作访问路径 | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小">
-<meta name="keywords" content="golang,map">
+  <meta name="description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world,但是我想要这样 localhost:4000/hexo/title,  hexo是文章的分类, title 是具体的博客.">
+<meta name="keywords" content="hexo,标签,url">
 <meta property="og:type" content="article">
-<meta property="og:title" content="golang 之 map">
-<meta property="og:url" content="http://yoursite.com/2019/07/01/golang 之 map/index.html">
+<meta property="og:title" content="hexo 使用标签用作访问路径">
+<meta property="og:url" content="http://yoursite.com/others/hexo-use-category-as-url.html">
 <meta property="og:site_name" content="write everything">
-<meta property="og:description" content="抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小">
+<meta property="og:description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world,但是我想要这样 localhost:4000/hexo/title,  hexo是文章的分类, title 是具体的博客.">
 <meta property="og:locale" content="c & golang">
-<meta property="og:updated_time" content="2019-07-27T15:25:47.586Z">
+<meta property="og:updated_time" content="2019-07-28T03:49:00.474Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="golang 之 map">
-<meta name="twitter:description" content="抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小">
+<meta name="twitter:title" content="hexo 使用标签用作访问路径">
+<meta name="twitter:description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world,但是我想要这样 localhost:4000/hexo/title,  hexo是文章的分类, title 是具体的博客.">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -60,9 +60,9 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/tags/redis/">redis</a></li>
+				<li><a href="/categories/redis/">redis</a></li>
 	        
-				<li><a href="/tags/golang/">golang</a></li>
+				<li><a href="/categories/golang/">golang</a></li>
 	        
 			</ul>
 		</nav>
@@ -128,9 +128,9 @@
 				
 					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/redis/">redis</a></li>
+					<li style="width: 33.333333333333336%"><a href="/categories/redis/">redis</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/golang/">golang</a></li>
+					<li style="width: 33.333333333333336%"><a href="/categories/golang/">golang</a></li>
 		        
 				</ul>
 			</nav>
@@ -145,69 +145,55 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-golang 之 map" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-hexo-use-category-as-url" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      golang 之 map
+      hexo 使用标签用作访问路径
     </h1>
   
 
         
-        <a href="/2019/07/01/golang 之 map/" class="archive-article-date">
-  	<time datetime="2019-07-01T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
+        <a href="/others/hexo-use-category-as-url.html" class="archive-article-date">
+  	<time datetime="2019-07-28T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>抽点时间阅读以下 golang 的 hmap，哈希表解决重头的方式一般有两种: 开放地址法和拉链法, 拉链法有个缺点就是不知道拉链链表的大小</p>
+        <p>使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 <code>localhost:4000/2019/07/01/hello-world</code>,<br>但是我想要这样 <code>localhost:4000/hexo/title</code>,  <code>hexo</code>是文章的分类, <code>title</code> 是具体的博客.</p>
 <a id="more"></a>
 
-<p>下面先给出 hmap 的结构</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> hmap <span class="keyword">struct</span> &#123;</span><br><span class="line">	count     <span class="keyword">int</span> <span class="comment">// hmap 的大小(元素个数)</span></span><br><span class="line">	flags     <span class="keyword">uint8</span></span><br><span class="line">	B         <span class="keyword">uint8</span>  <span class="comment">//</span></span><br><span class="line">	noverflow <span class="keyword">uint16</span> <span class="comment">// approximate number of overflow buckets; see incrnoverflow for details</span></span><br><span class="line">	hash0     <span class="keyword">uint32</span> <span class="comment">// hash seed</span></span><br><span class="line"></span><br><span class="line">	buckets    unsafe.Pointer <span class="comment">// hmap 数组</span></span><br><span class="line">	oldbuckets unsafe.Pointer <span class="comment">// 扩容时指向旧的 buckets 数组</span></span><br><span class="line">	nevacuate  <span class="keyword">uintptr</span>    </span><br><span class="line"></span><br><span class="line">	extra *mapextra <span class="comment">// optional fields</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> mapextra <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// 如果一个 buckets 数组溢出了, 将溢出的数据做一个拉链, 放到 overflow 中</span></span><br><span class="line">    <span class="comment">// 每一个 buckets 数组最多放 8 个数据, const 中有个常量</span></span><br><span class="line">	overflow    *[]*bmap</span><br><span class="line">	oldoverflow *[]*bmap</span><br><span class="line"></span><br><span class="line">	<span class="comment">// nextOverflow holds a pointer to a free overflow bucket.</span></span><br><span class="line">	nextOverflow *bmap</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// A bucket for a Go map.</span></span><br><span class="line"><span class="keyword">type</span> bmap <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// tophash generally contains the top byte of the hash value</span></span><br><span class="line">	<span class="comment">// for each key in this bucket. If tophash[0] &lt; minTopHash,</span></span><br><span class="line">	<span class="comment">// tophash[0] is a bucket evacuation state instead.</span></span><br><span class="line">	tophash [bucketCnt]<span class="keyword">uint8</span></span><br><span class="line">	<span class="comment">// Followed by bucketCnt keys and then bucketCnt values.</span></span><br><span class="line">	<span class="comment">// <span class="doctag">NOTE:</span> packing all the keys together and then all the values together makes the</span></span><br><span class="line">	<span class="comment">// code a bit more complicated than alternating key/value/key/value/... but it allows</span></span><br><span class="line">	<span class="comment">// us to eliminate padding which would be needed for, e.g., map[int64]int8.</span></span><br><span class="line">	<span class="comment">// Followed by an overflow pointer.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>几个重要结构的含义:   </p>
-<p><code>hmap.B:</code> 可以理解为 buckets 数组中有有 2^B 个 bucket<br><code>hmap.buckets:</code> buckets 数组的指针, 每个 buckets 的大小是固定的, 一般为 8 个<br><code>mapextra.overflow:</code> 假设 buckets 中的数据冲突非常严重, 超出了 8 个,   buckets 指针就会指向 overflow 的 buckets 数组指针<br><code>bmap.tophash:</code> 暂时没看明白, 占个坑位</p>
-<h4 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h4><p>代码逻辑主要在  <code>mapaccess1</code> 中, 同时还会发现 有好几个 <code>mapaccess</code> 函数, 其实这几个函数的逻辑大致类似, 只是返回值略有不同, 可以对比一下.<br>记录一下主要逻辑和存在疑惑的一些点:     </p>
+<p>这个在 hexo 怎么设置可以看下这篇博客 <a href="https://ijiaober.github.io/2014/08/05/hexo/hexo-04/" target="_blank" rel="noopener">hexo 标签</a></p>
+<p>有了 category 之后,我们需要去配置一下 hexo 的 <code>_config.yml</code> 文件</p>
 <ol>
-<li>首先会通过一个通用的 hash 函数得到 hash 值, 然后使用 <code>bucketMask</code> 这个函数得到一个 mask 值, 再通过这个 mask 值去确定这个 hash 值在 buckets 数组中的位置(偏移量), 进而得到目标 bucket, 上代码:</li>
+<li>修改 peimalink<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># URL</span><br><span class="line">## If your site is put in a subdirectory, set url as &apos;http://yoursite.com/child&apos; and root as &apos;/child/&apos;</span><br><span class="line">url: http://yoursite.com</span><br><span class="line">root: /</span><br><span class="line">permalink: :year/:month/:day/:title</span><br><span class="line">permalink_defaults:</span><br></pre></td></tr></table></figure>
+
+</li>
 </ol>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">alg := t.key.alg <span class="comment">// 这个应该是根据 map 中 key 的类型选择不同的 hash 函数</span></span><br><span class="line">hash := alg.hash(key, <span class="keyword">uintptr</span>(h.hash0))</span><br><span class="line">m := bucketMask(h.B)</span><br><span class="line">b := (*bmap)(add(h.buckets, (hash&amp;m)*<span class="keyword">uintptr</span>(t.bucketsize)))</span><br></pre></td></tr></table></figure>
+<p>修改一下 <code>peimalink</code> 属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">permalink: :category/:title</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// bucketShift returns 1&lt;&lt;b, optimized for code generation.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">bucketShift</span><span class="params">(b <span class="keyword">uint8</span>)</span> <span class="title">uintptr</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> sys.GoarchAmd64|sys.GoarchAmd64p32|sys.Goarch386 != <span class="number">0</span> &#123;</span><br><span class="line">        b &amp;= sys.PtrSize*<span class="number">8</span> - <span class="number">1</span> <span class="comment">// help x86 archs remove shift overflow checks</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">uintptr</span>(<span class="number">1</span>) &lt;&lt; b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bucketMask returns 1&lt;&lt;b - 1, optimized for code generation.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">bucketMask</span><span class="params">(b <span class="keyword">uint8</span>)</span> <span class="title">uintptr</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> bucketShift(b) - <span class="number">1</span>   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用 h.B 计算 mask, 应该是为了避免 hash 的值超出 buckets 数组的大小<br>这样计算之后, <code>(hash&amp;m)</code>的最大值为 <code>2^B - 1</code></p>
 <ol start="2">
-<li>计算 tophash 值    </li>
+<li>添加 category_map 列表<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Category &amp; Tag</span><br><span class="line">default_category: uncategorized</span><br><span class="line">category_map:</span><br><span class="line">    redis: redis</span><br><span class="line">    golang: golang</span><br><span class="line">    ffmpeg: ffmpeg</span><br><span class="line">tag_map:</span><br></pre></td></tr></table></figure>
+
+</li>
 </ol>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top := tophash(hash)</span><br></pre></td></tr></table></figure>
+<p><strong>注意: 需要修改每一个 md 文件, 添加 category 属性</strong></p>
+<blockquote>
+<p>编译部署之后, 一切正常, 但是有一个致命问题, 所有的文章都无法打开, 只要一点击文章, 就会提示保存网页.</p>
+</blockquote>
+<blockquote>
+<p>找了半天没找到解决方案, 然后去 hexo 生成的 public/categories/golang/ 目录下看了一下, 这个目录下生成的文件没有后缀, 但是内容都是 html, 所以最终的解决方式是在 <code>peimalink</code> 属性配置之后手动给一个 <code>html</code> 后缀, 效果如下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">permalink: :category/:title.html</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tophash calculates the tophash value for hash.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">tophash</span><span class="params">(hash <span class="keyword">uintptr</span>)</span> <span class="title">uint8</span></span> &#123;</span><br><span class="line">    top := <span class="keyword">uint8</span>(hash &gt;&gt; (sys.PtrSize*<span class="number">8</span> - <span class="number">8</span>))</span><br><span class="line">    <span class="keyword">if</span> top &lt; minTopHash &#123;</span><br><span class="line">        top += minTopHash</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> top</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考链接:<br><a href="https://hexo.io/docs/permalinks" target="_blank" rel="noopener">Permalink 配置</a></p>
 
-<p>这个应该是取 hash 值得最高 8 位, 使用 8 位 hash 值比较, 避免全量比较.</p>
-<ol start="3">
-<li>遍历 bucket</li>
-</ol>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">bucketloop:</span><br><span class="line"><span class="comment">// 如果有溢出</span></span><br><span class="line"><span class="keyword">for</span> ; b != <span class="literal">nil</span>; b = b.overflow(t) &#123;</span><br><span class="line">    <span class="comment">// 遍历一个 bucket</span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">uintptr</span>(<span class="number">0</span>); i &lt; bucketCnt; i++ &#123;</span><br><span class="line">        <span class="comment">// 判断一下 tophash 是否相等</span></span><br><span class="line">        <span class="keyword">if</span> b.tophash[i] != top &#123;</span><br><span class="line">            <span class="comment">// bucket 没有值</span></span><br><span class="line">            <span class="keyword">if</span> b.tophash[i] == emptyRest &#123;</span><br><span class="line">                <span class="keyword">break</span> bucketloop</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        k := add(unsafe.Pointer(b), dataOffset+i*<span class="keyword">uintptr</span>(t.keysize))</span><br><span class="line">        <span class="keyword">if</span> t.indirectkey() &#123;</span><br><span class="line">            k = *((*unsafe.Pointer)(k))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> alg.equal(key, k) &#123;</span><br><span class="line">            v := add(unsafe.Pointer(b), dataOffset+bucketCnt*<span class="keyword">uintptr</span>(t.keysize)+i*<span class="keyword">uintptr</span>(t.valuesize))</span><br><span class="line">            <span class="keyword">if</span> t.indirectvalue() &#123;</span><br><span class="line">                v = *((*unsafe.Pointer)(v))</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> v</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>先使用 <code>tophash</code> 的值比较是否相等, 然后在使用比较 key 值是否相等.</p>
-<h4 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h4><p>直接上代码吧</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> h.flags&amp;hashWriting != <span class="number">0</span> &#123;</span><br><span class="line">    throw(<span class="string">"concurrent map writes"</span>)</span><br><span class="line">&#125;</span><br><span class="line">alg := t.key.alg</span><br><span class="line">hash := alg.hash(key, <span class="keyword">uintptr</span>(h.hash0))</span><br><span class="line"></span><br><span class="line"><span class="comment">// Set hashWriting after calling alg.hash, since alg.hash may panic,</span></span><br><span class="line"><span class="comment">// in which case we have not actually done a write.</span></span><br><span class="line">h.flags ^= hashWriting</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> h.buckets == <span class="literal">nil</span> &#123;</span><br><span class="line">    h.buckets = newobject(t.bucket) <span class="comment">// newarray(t.bucket, 1)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>先判断是否是写状态, 如果有其他 goroutine 在写, 直接 panic<br>调用 hash 函数, 设置读标志位, 如果 buckets 为空, 则先创建一个</p>
-<hr>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bucket := hash &amp; bucketMask(h.B)</span><br><span class="line"><span class="keyword">if</span> h.growing() &#123;</span><br><span class="line">    growWork(t, h, bucket)</span><br><span class="line">&#125;</span><br><span class="line">b := (*bmap)(unsafe.Pointer(<span class="keyword">uintptr</span>(h.buckets) + bucket*<span class="keyword">uintptr</span>(t.bucketsize)))</span><br><span class="line">top := tophash(hash)</span><br></pre></td></tr></table></figure>
-
-<p>计算 bucket mask<br>如果当前 map 正在扩容, 先执行一次扩容计划<br>计算偏移地址, 计算 tophash</p>
-<hr>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="comment">// 循环遍历一个 bucket</span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">uintptr</span>(<span class="number">0</span>); i &lt; bucketCnt; i++ &#123;</span><br><span class="line">        <span class="comment">// 判断 tophash 是否相等</span></span><br><span class="line">        <span class="keyword">if</span> b.tophash[i] != top &#123;</span><br><span class="line">            <span class="keyword">if</span> isEmpty(b.tophash[i]) &amp;&amp; inserti == <span class="literal">nil</span> &#123;</span><br><span class="line">                inserti = &amp;b.tophash[i]</span><br><span class="line">                insertk = add(unsafe.Pointer(b), dataOffset+i*<span class="keyword">uintptr</span>(t.keysize))</span><br><span class="line">                val = add(unsafe.Pointer(b), dataOffset+bucketCnt*<span class="keyword">uintptr</span>(t.keysize)+i*<span class="keyword">uintptr</span>(t.valuesize))</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> b.tophash[i] == emptyRest &#123;</span><br><span class="line">                <span class="keyword">break</span> bucketloop</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果 tophash 相等</span></span><br><span class="line">        <span class="comment">// 计算 key 的偏移量</span></span><br><span class="line">        k := add(unsafe.Pointer(b), dataOffset+i*<span class="keyword">uintptr</span>(t.keysize))</span><br><span class="line">        <span class="keyword">if</span> t.indirectkey() &#123;</span><br><span class="line">            k = *((*unsafe.Pointer)(k))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 判断 key 是否相等</span></span><br><span class="line">        <span class="keyword">if</span> !alg.equal(key, k) &#123;</span><br><span class="line">            <span class="comment">// 不相等, 冲突了, 继续 遍历</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// already have a mapping for key. Update it.</span></span><br><span class="line">        <span class="keyword">if</span> t.needkeyupdate() &#123;</span><br><span class="line">            typedmemmove(t.key, k, key)</span><br><span class="line">        &#125;</span><br><span class="line">        val = add(unsafe.Pointer(b), dataOffset+bucketCnt*<span class="keyword">uintptr</span>(t.keysize)+i*<span class="keyword">uintptr</span>(t.valuesize))</span><br><span class="line">        <span class="keyword">goto</span> done</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// bucket 溢出桶</span></span><br><span class="line">    ovf := b.overflow(t)</span><br><span class="line">    <span class="keyword">if</span> ovf == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">    b = ovf</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h4>
       
 
       
@@ -220,11 +206,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">map</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">标签</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">url</a>
         		</li>
       		
 		</ul>
@@ -236,7 +226,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/golang//" class="article-tag-list-link color2">golang</a>
+        			<a href="/categories/others//" class="article-tag-list-link color3">杂记</a>
         		</li>
       		
 		</ul>
@@ -291,7 +281,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/01/golang 之 map/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/others/hexo-use-category-as-url.html" alt="微信分享二维码">
     </div>
 </div>
 
@@ -306,8 +296,8 @@
 <nav id="article-nav">
   
   
-    <a href="/2019/06/29/redis 之 sds 三/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">redis 之 sds 三</div>
+    <a href="/golang/golang 之 map.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">golang 之 map</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -334,7 +324,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#查询数据"><span class="toc-number">1.</span> <span class="toc-text">查询数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#插入数据"><span class="toc-number">2.</span> <span class="toc-text">插入数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除"><span class="toc-number">3.</span> <span class="toc-text">删除</span></a></li></ol>
+                    目录，不存在的…
                     </div>
                 </span>
             </div>
@@ -442,11 +432,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color2">golang</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+                <a href="javascript:void(0)" class="js-tag color4">map</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">标签</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">url</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -455,14 +461,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">x264</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">map</a>
               </li>
             
             <div class="clearfix"></div>

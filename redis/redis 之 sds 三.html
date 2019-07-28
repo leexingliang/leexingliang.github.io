@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>write everything</title>
+  <title>redis 之 sds 三 | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="ffmpeg 编译 huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264 准备 下载 ffmpeg, github 地址, ffmpeg选择 n4.0.2, 传送门 解压  配置 makefile1234567891011./configure \--enable-nonfree \--prefix=/home/capp/Do">
+  <meta name="description" content="在阅读 SDS 的源码时,发现一个现象,所有的 sds 的 api 处理字符串的方式都是按照 c类型字符串进行处理的,也就是在字符串结尾处添加一个结束符 \0,  而在使用 redis 时,网上的资料都说是 redis 字符串是二进制安全的,也就是支持在字符串中间出现结束符\0,  但是这和实际源码有出入, 怀疑是不是 redis 对字符串做了处理.">
+<meta name="keywords" content="redis,sds">
 <meta property="og:type" content="article">
-<meta property="og:title" content="write everything">
-<meta property="og:url" content="http://yoursite.com/2019/06/27/ffmpeg 编译/index.html">
+<meta property="og:title" content="redis 之 sds 三">
+<meta property="og:url" content="http://yoursite.com/redis/redis 之 sds 三.html">
 <meta property="og:site_name" content="write everything">
-<meta property="og:description" content="ffmpeg 编译 huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264 准备 下载 ffmpeg, github 地址, ffmpeg选择 n4.0.2, 传送门 解压  配置 makefile1234567891011./configure \--enable-nonfree \--prefix=/home/capp/Do">
+<meta property="og:description" content="在阅读 SDS 的源码时,发现一个现象,所有的 sds 的 api 处理字符串的方式都是按照 c类型字符串进行处理的,也就是在字符串结尾处添加一个结束符 \0,  而在使用 redis 时,网上的资料都说是 redis 字符串是二进制安全的,也就是支持在字符串中间出现结束符\0,  但是这和实际源码有出入, 怀疑是不是 redis 对字符串做了处理.">
 <meta property="og:locale" content="c & golang">
-<meta property="og:updated_time" content="2019-07-27T13:29:15.287Z">
+<meta property="og:updated_time" content="2019-07-28T01:55:30.193Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="write everything">
-<meta name="twitter:description" content="ffmpeg 编译 huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264 准备 下载 ffmpeg, github 地址, ffmpeg选择 n4.0.2, 传送门 解压  配置 makefile1234567891011./configure \--enable-nonfree \--prefix=/home/capp/Do">
+<meta name="twitter:title" content="redis 之 sds 三">
+<meta name="twitter:description" content="在阅读 SDS 的源码时,发现一个现象,所有的 sds 的 api 处理字符串的方式都是按照 c类型字符串进行处理的,也就是在字符串结尾处添加一个结束符 \0,  而在使用 redis 时,网上的资料都说是 redis 字符串是二进制安全的,也就是支持在字符串中间出现结束符\0,  但是这和实际源码有出入, 怀疑是不是 redis 对字符串做了处理.">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -59,7 +60,9 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/tags/随笔/">随笔</a></li>
+				<li><a href="/categories/redis/">redis</a></li>
+	        
+				<li><a href="/categories/golang/">golang</a></li>
 	        
 			</ul>
 		</nav>
@@ -107,6 +110,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -118,12 +123,14 @@
 			</nav>
 
 			<nav class="header-menu js-header-menu">
-				<ul style="width: 50%">
+				<ul style="width: 70%">
 				
 				
-					<li style="width: 50%"><a href="/">主页</a></li>
+					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
 		        
-					<li style="width: 50%"><a href="/tags/随笔/">随笔</a></li>
+					<li style="width: 33.333333333333336%"><a href="/categories/redis/">redis</a></li>
+		        
+					<li style="width: 33.333333333333336%"><a href="/categories/golang/">golang</a></li>
 		        
 				</ul>
 			</nav>
@@ -138,82 +145,73 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-ffmpeg 编译" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-redis 之 sds 三" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      redis 之 sds 三
+    </h1>
+  
+
+        
+        <a href="/redis/redis 之 sds 三.html" class="archive-article-date">
+  	<time datetime="2019-06-29T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="ffmpeg-编译"><a href="#ffmpeg-编译" class="headerlink" title="ffmpeg 编译"></a>ffmpeg 编译</h1><hr>
-<p><code>huifang-fencode</code>使用<code>ffmpeg</code>进行编码, 编译<code>ffmpeg</code>之前首先要编译<code>x264</code>, 见这个<a href="http://wiki.iyunxiao.com/pages/viewpage.action?pageId=353609706" target="_blank" rel="noopener">编译libx264</a></p>
-<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><ol>
-<li>下载 ffmpeg, <a href="https://github.com/FFmpeg/FFmpeg" target="_blank" rel="noopener">github 地址</a>, <code>ffmpeg</code>选择 <code>n4.0.2</code>, <a href="https://github.com/FFmpeg/FFmpeg/releases/tag/n4.0.2" target="_blank" rel="noopener">传送门</a></li>
-<li>解压</li>
-</ol>
-<h3 id="配置-makefile"><a href="#配置-makefile" class="headerlink" title="配置 makefile"></a>配置 makefile</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">./configure \</span><br><span class="line">--<span class="built_in">enable</span>-nonfree \</span><br><span class="line">--prefix=/home/capp/Downloads/ffmpeg-n4.0.2/libs \</span><br><span class="line">--<span class="built_in">enable</span>-shared \</span><br><span class="line">--<span class="built_in">disable</span>-static \</span><br><span class="line">--<span class="built_in">enable</span>-gpl \</span><br><span class="line">--<span class="built_in">enable</span>-libx264 \</span><br><span class="line">--<span class="built_in">enable</span>-ffmpeg \</span><br><span class="line">--<span class="built_in">disable</span>-asm \</span><br><span class="line">--<span class="built_in">disable</span>-optimizations \</span><br><span class="line">--<span class="built_in">disable</span>-stripping</span><br></pre></td></tr></table></figure>
+        <p>在阅读 SDS 的源码时,发现一个现象,所有的 sds 的 api 处理字符串的方式都是按照 c类型字符串进行处理的,也就是在字符串结尾处添加一个结束符 <code>\0</code>,  而在使用 redis 时,网上的资料都说是 redis 字符串是二进制安全的,也就是支持在字符串中间出现结束符<code>\0</code>,  但是这和实际源码有出入, 怀疑是不是 redis 对字符串做了处理. </p>
+<a id="more"></a>
 
-<p><code>--prefix</code>: 指定安装路径<br>配置 makefile 遇到的一些问题参考问题记录里的内容</p>
-<h3 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>所以使用 redis 命令进行测试</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 直接插入  \0</span></span><br><span class="line"><span class="built_in">set</span> <span class="string">"123"</span> <span class="string">"123\0123"</span></span><br><span class="line">get <span class="string">"123"</span></span><br><span class="line"><span class="comment">// 结果: "123\0123"</span></span><br></pre></td></tr></table></figure>
 
-<p>编译安装之后遇到的问题</p>
-<h2 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h2><h3 id="1-配置-makefile-问题记录"><a href="#1-配置-makefile-问题记录" class="headerlink" title="1. 配置 makefile 问题记录:"></a>1. 配置 makefile 问题记录:</h3><hr>
-<ul>
-<li>上面的指令执行完成之后可能会报错</li>
-</ul>
-<hr>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ERROR: libx264 not found</span><br><span class="line">```    </span><br><span class="line">原因:  `libx264` 库没有找到      </span><br><span class="line">解决方法: 配置一下环境变量</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line"><span class="built_in">export</span> PKG_CONFIG_PATH=/home/capp/Downloads/x264/libs/lib/pkgconfig/</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 插入转义的  \0</span></span><br><span class="line"><span class="built_in">set</span> <span class="string">"123"</span> <span class="string">" 123\\0123"</span></span><br><span class="line">get <span class="string">"123"</span></span><br><span class="line"><span class="comment">// 结果: "123\\0123"</span></span><br></pre></td></tr></table></figure>
 
-<p>指定的路径就是<code>x264</code>的安装路径, 在<code>lib</code>目录下面的<code>pkgconfig</code>目录</p>
-<ul>
-<li>配置好环境变量再次执行<code>configure</code>指令, 还有可能会出错</li>
-</ul>
-<hr>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WARNING: using libfdk without pkg-config</span><br><span class="line">WARNING: using libx264 without pkg-config</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 直接插入单个字符  \0</span></span><br><span class="line"><span class="built_in">set</span> <span class="string">"123"</span> <span class="string">'\0'</span></span><br><span class="line">get <span class="string">"123"</span></span><br><span class="line"><span class="comment">// 结果: "\\0"</span></span><br></pre></td></tr></table></figure>
 
-<p>这个问题我的解决方式是安装 <code>pkg-config</code> 这个安装包</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install pkg-config</span><br></pre></td></tr></table></figure>
-
-<p>在去执行 <code>configure</code> 就没有错误了</p>
-<h3 id="2-编译之后遇到的问题"><a href="#2-编译之后遇到的问题" class="headerlink" title="2. 编译之后遇到的问题"></a>2. 编译之后遇到的问题</h3><hr>
-<p>编译之后查看目标文件的链接情况 <code>ldd ffmpeg</code><br>看到的结果是有几个库没有找到链接库文件, 显示<code>xxx not found</code>, 但是库文件是存在的.<br>查找资料得知, 由于我们的编译安装路径是在自己的目录下, <code>ld</code> 链接找不到这个库文件, 需要将库的安装路径添加到 <code>ld config</code> 中.    </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编辑 /etc/ld.conf 文件</span></span><br><span class="line">vim /etc/ld.conf</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">include ld.so.conf.d/*.conf</span><br><span class="line">/home/capp/Downloads/x264/libs/lib</span><br><span class="line">/home/capp/Downloads/ffmpeg-n4.0.2/libs/lib</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 然后执行命令</span></span><br><span class="line">ldconfig</span><br></pre></td></tr></table></figure>
-
-<p>当然, 更好的方式不是编辑 <code>/etc/ld.conf</code> 文件, 而是在 <code>/etc/ld.conf.d/</code> 目录下创建一个属于自己的文件, 不过需要注意的是, 文件的结尾必须是以 <code>.conf</code> 为后缀.</p>
-<h4 id="最后说一下"><a href="#最后说一下" class="headerlink" title="最后说一下"></a>最后说一下</h4><p><code>pkg-config</code> 是一个第三方库的管理工具, 当需要引用第三方库时, 通常的做法是将库的头文件路径和库的路径都加到编译选项中, 如果使用 <code>pkg-config</code> 会帮我们省去这一步骤.<br>第三方库在编译完成之后会在 库的安装路径之下生成一个 <code>pkgconfig</code> 的目录, 如果编译的时候需要第三方库, 直接将这个目录的路径设置到 <code>PKG_CONFIG_PATH</code> 环境变量中, 在编译的时候会去自动查找第三方库.</p>
-<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p><a href="https://forum.ivorde.com/ffmpeg-error-while-loading-shared-libraries-libavdevice-so-52-cannot-open-shared-object-file-no-t129.html" target="_blank" rel="noopener">链接出错</a><br><a href="https://blog.csdn.net/luotuo44/article/details/24836901" target="_blank" rel="noopener">pkg-config 介绍</a></p>
+<p>这个只是简单的验证, 后面没有获取到 key 对应 value 的字符串长度, 所以无法考量是不是这样.</p>
+<p>继续阅读源码, 看看后面的指令客户端是不是对这块做了处理.</p>
 
       
 
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
       
     </div>
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sds</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -263,7 +261,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/06/27/ffmpeg 编译/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/redis/redis 之 sds 三.html" alt="微信分享二维码">
     </div>
 </div>
 
@@ -277,9 +275,18 @@
   
 <nav id="article-nav">
   
+    <a href="/golang/golang 之 map.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          golang 之 map
+        
+      </div>
+    </a>
   
-    <a href="/2019/06/27/x264 编译/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title"></div>
+  
+    <a href="/redis/redis 之 sds 二.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">redis 之 sds 二</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -298,6 +305,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
@@ -343,7 +363,7 @@
 		toc_hide_index: true,
 		root: "/",
 		innerArchive: true,
-		showTags: false
+		showTags: true
 	}
 </script>
 
@@ -395,6 +415,42 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">ffmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">map</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">标签</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">url</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">sds</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">x264</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
