@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Category: golang | write everything</title>
+  <title>传输层协议 之 TCP 二 | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="嘿咻嘿咻嘿咻👌">
-<meta property="og:type" content="website">
-<meta property="og:title" content="write everything">
-<meta property="og:url" content="http://yoursite.com/categories/golang/index.html">
+  <meta name="description" content="这一节主要记录 TCP 协议中的一些算法， 顺序问题、滑动窗口、超时重传/快重传、快恢复、流量控制、拥塞控制 tcp会对每一个数据包进行编号，并且序号都是连续的">
+<meta name="keywords" content="网络,tcp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="传输层协议 之 TCP 二">
+<meta property="og:url" content="http://yoursite.com/network/tcp-protocol-2.html">
 <meta property="og:site_name" content="write everything">
-<meta property="og:description" content="嘿咻嘿咻嘿咻👌">
+<meta property="og:description" content="这一节主要记录 TCP 协议中的一些算法， 顺序问题、滑动窗口、超时重传/快重传、快恢复、流量控制、拥塞控制 tcp会对每一个数据包进行编号，并且序号都是连续的">
 <meta property="og:locale" content="c & golang">
+<meta property="og:updated_time" content="2019-07-28T04:46:20.403Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="write everything">
-<meta name="twitter:description" content="嘿咻嘿咻嘿咻👌">
+<meta name="twitter:title" content="传输层协议 之 TCP 二">
+<meta name="twitter:description" content="这一节主要记录 TCP 协议中的一些算法， 顺序问题、滑动窗口、超时重传/快重传、快恢复、流量控制、拥塞控制 tcp会对每一个数据包进行编号，并且序号都是连续的">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -167,75 +169,201 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-tcp-protocol-2" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/golang/golang 之 map.html" class="archive-article-date">
-  	<time datetime="2019-07-01T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/golang/golang 之 map.html">golang 之 map</a>
+    <h1 class="article-title" itemprop="name">
+      传输层协议 之 TCP 二
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/network/tcp-protocol-2.html" class="archive-article-date">
+  	<time datetime="2019-07-28T04:43:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这一节主要记录 TCP 协议中的一些算法， 顺序问题、滑动窗口、超时重传/快重传、快恢复、流量控制、拥塞控制</p>
+<p>tcp会对每一个数据包进行编号，并且序号都是连续的</p>
+<a id="more"></a>
+
+<h3 id="发送确认机制"><a href="#发送确认机制" class="headerlink" title="发送确认机制"></a>发送确认机制</h3><p>tcp 会对每一个接收到的数据包发送一个 确认ACK， 来通知发送方，你这个数据包我已经收到了。这就有点像：你交代了一个事情给一个人做，他做完了之后会告诉你一声这件事情我已经做完了。<br>发送机制：发送方可以一次发送一个数据包，然后等待ack，收到ack才会发送下一个数据包，这种工作方式是串行的，实际上，发送方并不需要每次都等待接收方的ack，它可以一次性发送多个数据包，这就像是你给别人交代任务，你不需要交代一件事，然后就盯着他做完，在交代下一件，你可以一次性交代多件，而别人只需要记录下来，没做完一件就就做一下标记，每隔一段时间汇报下工作进度。<br>确认机制可以是简单的 一个数据包发送一个ack，但是每一个数据包都发送一个ack，造成了网络带宽的极大浪费，接收方可以在接收到多个数据包，然后只发送一个ack，表示这个数据包之前的都已经接收到了，这种机制是<code>累计确认</code>。</p>
+<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><p>双方进行通信过程中，如果发送一方发送数据过快，接收一方来不及接收，所以在双方的通信过程中，需要发送方能够感知到接收方当前能够接收的数据量，避免发送的数据包过多而接收方来不及处理。<br>滑动窗口的机制是接收一方告诉发送一方我当前最多还能接收多少个数据包，发送方会根据这个值来调整自己的发送窗口大小，这个就是滑动窗口。<br>滑动窗口在发送方一端的表现形式：</p>
+<ol>
+<li>已发送并且已确认</li>
+<li>已发送但未确认</li>
+<li>未发送但是准备发送</li>
+<li>未发送不准备发送</li>
+</ol>
+<p>上面是发送一端的数据包的几种状态， 第三部分和第四部分都是未发送，一个是在滑动窗口内部，一个实在滑动窗口以外。</p>
+<p>滑动窗口在接收一端的表现形式：</p>
+<ol>
+<li>已接收并已确认</li>
+<li>已接收未确认</li>
+<li>还没接收的部分，超出工作负荷</li>
+</ol>
+<h4 id="滑动窗口状态转移："><a href="#滑动窗口状态转移：" class="headerlink" title="滑动窗口状态转移："></a>滑动窗口状态转移：</h4><p>下面都是假定在双方通信过程中滑动窗口的大小不会发生变化，并且滑动窗口的大小假定为 <code>9</code>。<br>对发送方来说，每次发送一个数据包，发送指针往前走一个，但是滑动窗口的起始位置并不发生变化；当发送方接收到一个ack时，滑动窗口的起始位置都会往前移动，假设该ack只是对一个数据包的确认，移动的大小就为 <code>1</code>。<br>对接收方来说，每次接收一个数据，窗口的大小就减少一个，没发送一个ack确认，窗口的大小就增大一个。</p>
+<p>而对接收方来说，并不是每个数据包都必须发送ack确认包，这样太消耗网络带宽了， 采用累计确认的方式会更高效，  <code>累计确认：TCP会对接收到的数据包延迟发送ack，等待一段时间，如果有其它的数据包到达，则只发送一个ack，表示这个数据包之前的数据我都接受到了</code>。</p>
+<p>如果接收方的buff缓冲区已经塞满了，可以通知发送方我的滑动窗口为0，不要在发送了。<br>如果发送方的滑动窗口为0，<del>发送方会每隔一段时间去探测一下对方的滑动窗口是否有变化</del>，发送方会定时发送窗口探测数据包，看是否有机会调整窗口大小。而接收方不会每空出一个字节就会通知对方，而是当窗口大小达到一定大小，或者缓冲区的一半时，才会告诉对方，这样做是为了避免低能窗口综合征。</p>
+<blockquote>
+<p>有一个比较常见的问题，socket的缓冲区大小和滑动窗口的大小是否是一个东西？<br>应该不是一个东西，socket缓冲区内应该还有一部分已经发送确认包，但是没有被应用程序读取的数据，这一部分数据应该不属于滑动窗口的范围，而应该属于buff缓冲区的大小。滑动窗口的大小应该是  MIN( size(buff) -size(recved_data),  advertiseWindow)</p>
+</blockquote>
+<p>如果发生了数据包的丢失，tcp会采取重传策略，重传方式有两种：一种是超时重传，另一种是快速重传。<br>超时重传：发送方发送一个数据包，之后会设置一个定时器，如果超时还没有收到ack，表示数据包已经丢失，需要重传。定时器的超时时间并不是一个固定值，会结合当前的网络状况综合计算，<code>自适应重传算法</code>。  超时重传还会有再次重传的情况，TCP的策略是超时时间加倍，也就是没重传一次，下一次的超时时间会是之前的两倍。因为再次超时，说明网络环境不好，不宜频繁重传。这就是<code>超时重传</code>。</p>
+<p>还有一种方式，加入接收端已经收到了 2，3，4，6，7这几个序号的数据包，序号为5的数据包丢失了，而此时接收端收到了一个序号为9的数据包，接收端就会知道5这个数据包已经丢失了，会立即发送三个冗余的序号为5的ack，接收端收到这三个相同的ack之后，就会知道序号为5的这个数据包丢失了，不用等待定时器超时，会立即重传5这个数据包，这就是<code>快重传</code>。</p>
+<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p>拥塞控制，也是通过窗口来控制大小，滑动窗口是怕把接收方的缓冲区塞满，而拥塞控制是怕把网络塞满。两者共同控制着发送速度。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">map</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">tcp</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/golang//" class="article-tag-list-link color2">golang</a>
+        			<a href="/categories/network//" class="article-tag-list-link color3">network</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/network/tcp-protocol-2.html" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/network/tcp-protocol-1.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">传输层协议 之 TCP 一</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#发送确认机制"><span class="toc-number">1.</span> <span class="toc-text">发送确认机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#滑动窗口"><span class="toc-number">2.</span> <span class="toc-text">滑动窗口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#滑动窗口状态转移："><span class="toc-number">2.1.</span> <span class="toc-text">滑动窗口状态转移：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#拥塞控制"><span class="toc-number">3.</span> <span class="toc-text">拥塞控制</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -258,10 +386,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
 		root: "/",
