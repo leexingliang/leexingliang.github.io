@@ -169,6 +169,101 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-golang-closure" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/golang/golang-closure.html">golang 之 closure</a>
+    </h1>
+  
+
+        
+        <a href="/golang/golang-closure.html" class="archive-article-date">
+  	<time datetime="2019-07-30T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这一篇文章主要介绍一下 golang 的闭包函数和自由变量的概念</p>
+<p>在做开发时, 写过类似下面这样的代码, 觉得很有意思</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test_Panic</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> a <span class="keyword">int</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="built_in">recover</span>()</span><br><span class="line">		fmt.Println(a)</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	a = <span class="number">2</span></span><br><span class="line">	a = <span class="number">3</span></span><br><span class="line">	a = <span class="number">4</span></span><br><span class="line">	<span class="built_in">panic</span>(<span class="string">"panic"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>golang 的 defer 函数是如何捕获外部变量的, 以及外部变量的修改为什么会影响到闭包函数内部?</p>
+        
+          <a class="article-more-a" href="/golang/golang-closure.html#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">closure</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/golang//" class="article-tag-list-link color2">golang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/golang/golang-closure.html">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-udp-protocol" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -463,7 +558,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 <code>localhost:4000/2019/07/01/hello-world</code>,<br>但是我想要这样 <code>localhost:4000/hexo/title</code>,  <code>hexo</code>是文章的分类, <code>title</code> 是具体的博客.</p>
+        <p>使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 <code>localhost:4000/2019/07/01/hello-world</code>, 但是我想要这样 <code>localhost:4000/hexo/hello-world</code><br><code>hexo</code>是文章的分类, <code>hello-world</code> 是具体的博客.</p>
         
           <a class="article-more-a" href="/others/hexo-use-category-as-url.html#more">more >></a>
         
@@ -551,7 +646,7 @@
 
         
         <a href="/golang/golang 之 map.html" class="archive-article-date">
-  	<time datetime="2019-07-01T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
+  	<time datetime="2019-07-27T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-27</time>
 </a>
         
       </header>
@@ -1001,93 +1096,6 @@
 
 
   
-    <article id="post-ffmpeg 编译" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/ffmpeg/ffmpeg 编译.html">ffmpeg 编译</a>
-    </h1>
-  
-
-        
-        <a href="/ffmpeg/ffmpeg 编译.html" class="archive-article-date">
-  	<time datetime="2019-05-26T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><code>huifang-fencode</code>使用<code>ffmpeg</code>进行编码, 编译<code>ffmpeg</code>之前首先要编译<code>x264</code>, 见这个<a href="http://wiki.iyunxiao.com/pages/viewpage.action?pageId=353609706" target="_blank" rel="noopener">编译libx264</a></p>
-        
-          <a class="article-more-a" href="/ffmpeg/ffmpeg 编译.html#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">ffmpeg</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ffmpeg//" class="article-tag-list-link color2">ffmpeg</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/ffmpeg/ffmpeg 编译.html">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1177,18 +1185,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">标签</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">url</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">ffmpeg</a>
               </li>
              
@@ -1198,6 +1194,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">map</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">closure</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">标签</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">url</a>
               </li>
              
               <li class="article-tag-list-item">

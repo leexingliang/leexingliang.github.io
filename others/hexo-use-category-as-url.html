@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>hexo 使用标签用作访问路径 | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world,但是我想要这样 localhost:4000/hexo/title,  hexo是文章的分类, title 是具体的博客.">
+  <meta name="description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world, 但是我想要这样 localhost:4000/hexo/hello-worldhexo是文章的分类, hello-world 是具体的博客.">
 <meta name="keywords" content="hexo,标签,url">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hexo 使用标签用作访问路径">
 <meta property="og:url" content="http://yoursite.com/others/hexo-use-category-as-url.html">
 <meta property="og:site_name" content="write everything">
-<meta property="og:description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world,但是我想要这样 localhost:4000/hexo/title,  hexo是文章的分类, title 是具体的博客.">
+<meta property="og:description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world, 但是我想要这样 localhost:4000/hexo/hello-worldhexo是文章的分类, hello-world 是具体的博客.">
 <meta property="og:locale" content="c & golang">
-<meta property="og:updated_time" content="2019-07-28T03:49:00.474Z">
+<meta property="og:updated_time" content="2019-07-30T03:15:35.288Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hexo 使用标签用作访问路径">
-<meta name="twitter:description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world,但是我想要这样 localhost:4000/hexo/title,  hexo是文章的分类, title 是具体的博客.">
+<meta name="twitter:description" content="使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 localhost:4000/2019/07/01/hello-world, 但是我想要这样 localhost:4000/hexo/hello-worldhexo是文章的分类, hello-world 是具体的博客.">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -189,10 +189,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 <code>localhost:4000/2019/07/01/hello-world</code>,<br>但是我想要这样 <code>localhost:4000/hexo/title</code>,  <code>hexo</code>是文章的分类, <code>title</code> 是具体的博客.</p>
+        <p>使用 hexo + github 搭建了一个个人博客, 但是在使用的时候发现, 博客文章的 url 连接都是时间, 类似这样 <code>localhost:4000/2019/07/01/hello-world</code>, 但是我想要这样 <code>localhost:4000/hexo/hello-world</code><br><code>hexo</code>是文章的分类, <code>hello-world</code> 是具体的博客.</p>
 <a id="more"></a>
 
-<p>这个在 hexo 怎么设置可以看下这篇博客 <a href="https://ijiaober.github.io/2014/08/05/hexo/hexo-04/" target="_blank" rel="noopener">hexo 标签</a></p>
+<p> hexo 的标签怎么设置可以看下这篇博客 <a href="https://ijiaober.github.io/2014/08/05/hexo/hexo-04/" target="_blank" rel="noopener">hexo 标签</a></p>
 <p>有了 category 之后,我们需要去配置一下 hexo 的 <code>_config.yml</code> 文件</p>
 <ol>
 <li>修改 peimalink<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># URL</span><br><span class="line">## If your site is put in a subdirectory, set url as &apos;http://yoursite.com/child&apos; and root as &apos;/child/&apos;</span><br><span class="line">url: http://yoursite.com</span><br><span class="line">root: /</span><br><span class="line">permalink: :year/:month/:day/:title</span><br><span class="line">permalink_defaults:</span><br></pre></td></tr></table></figure>
@@ -203,7 +203,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">permalink: :category/:title</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
-<li>添加 category_map 列表<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Category &amp; Tag</span><br><span class="line">default_category: uncategorized</span><br><span class="line">category_map:</span><br><span class="line">    redis: redis</span><br><span class="line">    golang: golang</span><br><span class="line">    ffmpeg: ffmpeg</span><br><span class="line">tag_map:</span><br></pre></td></tr></table></figure>
+<li>添加 category_map 列表<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Category &amp; Tag</span><br><span class="line">default_category: uncategorized</span><br><span class="line">category_map:</span><br><span class="line">    redis: redis</span><br><span class="line">    golang: golang</span><br><span class="line">    ffmpeg: ffmpeg</span><br><span class="line">    杂记: others</span><br><span class="line">tag_map:</span><br></pre></td></tr></table></figure>
 
 </li>
 </ol>
@@ -216,6 +216,7 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">permalink: :category/:title.html</span><br></pre></td></tr></table></figure>
 
+<p>之后一切正常, 就像你现在看到的, 访问地址已经是 <code>https://leexingliang.github.io/others/hexo-use-category-as-url.html</code></p>
 <p>参考链接:<br><a href="https://hexo.io/docs/permalinks" target="_blank" rel="noopener">Permalink 配置</a></p>
 
       
@@ -461,18 +462,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">标签</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">url</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">ffmpeg</a>
               </li>
              
@@ -482,6 +471,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">map</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">closure</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">标签</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">url</a>
               </li>
              
               <li class="article-tag-list-item">
