@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="write everything">
 <meta property="og:description" content="在阅读 SDS 的源码时,发现一个现象,所有的 sds 的 api 处理字符串的方式都是按照 c类型字符串进行处理的,也就是在字符串结尾处添加一个结束符 \0,  而在使用 redis 时,网上的资料都说是 redis 字符串是二进制安全的,也就是支持在字符串中间出现结束符\0,  但是这和实际源码有出入, 怀疑是不是 redis 对字符串做了处理.">
 <meta property="og:locale" content="c & golang">
-<meta property="og:updated_time" content="2019-07-28T01:55:30.193Z">
+<meta property="og:updated_time" content="2019-07-31T12:35:00.613Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis 之 sds 三">
 <meta name="twitter:description" content="在阅读 SDS 的源码时,发现一个现象,所有的 sds 的 api 处理字符串的方式都是按照 c类型字符串进行处理的,也就是在字符串结尾处添加一个结束符 \0,  而在使用 redis 时,网上的资料都说是 redis 字符串是二进制安全的,也就是支持在字符串中间出现结束符\0,  但是这和实际源码有出入, 怀疑是不是 redis 对字符串做了处理.">
@@ -201,7 +201,8 @@
 
 <p>这个只是简单的验证, 后面没有获取到 key 对应 value 的字符串长度, 所以无法考量是不是这样.</p>
 <p>继续阅读源码, 看看后面的指令客户端是不是对这块做了处理.</p>
-
+<p>果然, 在字符串追加时, 有这么一个处理逻辑</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Append to the sds string "s" an escaped string representation where</span></span><br><span class="line"><span class="comment"> * all the non-printable characters (tested with isprint()) are turned into</span></span><br><span class="line"><span class="comment"> * escapes in the form "\n\r\a...." or "\x&lt;hex-number&gt;".</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * After the call, the modified sds string is no longer valid and all the</span></span><br><span class="line"><span class="comment"> * references must be substituted with the new pointer returned by the call. */</span></span><br><span class="line"><span class="function">sds <span class="title">sdscatrepr</span><span class="params">(sds s, <span class="keyword">const</span> <span class="keyword">char</span> *p, <span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    s = sdscatlen(s,<span class="string">"\""</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(len--) &#123;</span><br><span class="line">        <span class="keyword">switch</span>(*p) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\\'</span>:</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'"'</span>:</span><br><span class="line">            s = sdscatprintf(s,<span class="string">"\\%c"</span>,*p);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\n'</span>: s = sdscatlen(s,<span class="string">"\\n"</span>,<span class="number">2</span>); <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\r'</span>: s = sdscatlen(s,<span class="string">"\\r"</span>,<span class="number">2</span>); <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\t'</span>: s = sdscatlen(s,<span class="string">"\\t"</span>,<span class="number">2</span>); <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\a'</span>: s = sdscatlen(s,<span class="string">"\\a"</span>,<span class="number">2</span>); <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\b'</span>: s = sdscatlen(s,<span class="string">"\\b"</span>,<span class="number">2</span>); <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isprint</span>(*p))</span><br><span class="line">                s = sdscatprintf(s,<span class="string">"%c"</span>,*p);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="comment">// '\0' 应该走这个分支</span></span><br><span class="line">                s = sdscatprintf(s,<span class="string">"\\x%02x"</span>,(<span class="keyword">unsigned</span> <span class="keyword">char</span>)*p);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        p++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sdscatlen(s,<span class="string">"\""</span>,<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
 
       
@@ -469,6 +470,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">mysqldump</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
@@ -486,6 +491,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">udp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vim</a>
               </li>
              
               <li class="article-tag-list-item">

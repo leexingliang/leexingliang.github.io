@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Category: network | write everything</title>
+  <title>mysqldump | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="嘿咻嘿咻嘿咻👌">
-<meta property="og:type" content="website">
-<meta property="og:title" content="write everything">
-<meta property="og:url" content="http://yoursite.com/categories/network/index.html">
+  <meta name="description" content="记录一次 使用 mysqldump 导出数据, mysqldump 用法, 以及遇到的一个很蠢的问题.">
+<meta name="keywords" content="mysqldump">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysqldump">
+<meta property="og:url" content="http://yoursite.com/others/mysqldump-usecase.html">
 <meta property="og:site_name" content="write everything">
-<meta property="og:description" content="嘿咻嘿咻嘿咻👌">
+<meta property="og:description" content="记录一次 使用 mysqldump 导出数据, mysqldump 用法, 以及遇到的一个很蠢的问题.">
 <meta property="og:locale" content="c & golang">
+<meta property="og:updated_time" content="2019-07-31T09:52:05.319Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="write everything">
-<meta name="twitter:description" content="嘿咻嘿咻嘿咻👌">
+<meta name="twitter:title" content="mysqldump">
+<meta name="twitter:description" content="记录一次 使用 mysqldump 导出数据, mysqldump 用法, 以及遇到的一个很蠢的问题.">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -167,181 +169,203 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-mysqldump-usecase" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      mysqldump
+    </h1>
+  
+
+        
+        <a href="/others/mysqldump-usecase.html" class="archive-article-date">
+  	<time datetime="2019-07-31T09:49:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-31</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>记录一次 使用 mysqldump 导出数据, mysqldump 用法, 以及遇到的一个很蠢的问题.</p>
+<a id="more"></a>
+
+<ol>
+<li><p>导出整个数据库</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -u username -ppassword database_name  &gt; the_whole_database_dump.sql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>导出数据库中的某一张表</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -u username -ppassword database_name table_name &gt; single_table_dump.sql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>导出数据库中某张表内的指定数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -u username -ppassword database_name table_name <span class="comment">--where="date_created='2013-06-25'" &gt; few_rows_dump.sql</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<blockquote>
+<p>指定 where 条件即可</p>
+</blockquote>
+<ol start="4">
+<li>导入数据<br>方式一:<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -u admin -padmin -h 10.11.0.3 -P 9021 fudao &lt; session.sql</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>方式二:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 连接 mysql, 并且使用 fudao 数据库</span><br><span class="line">mysql -u admin -padmin -h 10.11.0.3 -P 9021 fudao</span><br><span class="line"></span><br><span class="line">// 导入数据</span><br><span class="line">source session.sql</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>记录一个小问题:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump <span class="comment">--host=127.0.0.1:6021 -u "rd" -p "123" aifudao session --where="start&gt;'2018-05-01 00:00:00'" &gt; session.sql</span></span><br></pre></td></tr></table></figure>
+
+<p>第一个问题: mysql 命令不支持 <code>host:port</code> 的格式, 需要指定 IP 的时候, 需要是 <code>-h host -ppasswd</code>, 并且 <code>-p</code> 参数和 <code>passwd</code> 之间没有空格<br>应该写成这样</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -u rd -p123 -h 127.0.0.1 -P 6021 aifudao session <span class="comment">--where="start&gt;'2018-05-01 00:00:00'" &gt; session.sql</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.majiaxueyuan.com/front/articleinfo/16.html" target="_blank" rel="noopener">参考链接</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/network/udp-protocol.html" class="archive-article-date">
-  	<time datetime="2019-07-28T04:53:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/network/udp-protocol.html">传输层协议 之 UDP</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">udp</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mysqldump</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/network//" class="article-tag-list-link color3">network</a>
+        			<a href="/categories/others//" class="article-tag-list-link color3">杂记</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/others/mysqldump-usecase.html" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/network/tcp-protocol-2.html" class="archive-article-date">
-  	<time datetime="2019-07-28T04:43:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-28</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/others/vim-usecase.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">vim 一些常用的小技巧</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/network/tcp-protocol-2.html">传输层协议 之 TCP 二</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">tcp</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/network//" class="article-tag-list-link color3">network</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/network/tcp-protocol-1.html" class="archive-article-date">
-  	<time datetime="2019-07-28T04:33:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/network/tcp-protocol-1.html">传输层协议 之 TCP 一</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">tcp</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/network//" class="article-tag-list-link color3">network</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -364,10 +388,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
 		root: "/",
