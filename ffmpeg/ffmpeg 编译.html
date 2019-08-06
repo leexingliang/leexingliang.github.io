@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="write everything">
 <meta property="og:description" content="huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264">
 <meta property="og:locale" content="c & golang">
-<meta property="og:updated_time" content="2019-07-28T01:54:47.893Z">
+<meta property="og:updated_time" content="2019-08-06T06:46:30.875Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ffmpeg 编译">
 <meta name="twitter:description" content="huifang-fencode使用ffmpeg进行编码, 编译ffmpeg之前首先要编译x264, 见这个编译libx264">
@@ -201,26 +201,22 @@
 <h3 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
 
 <p>编译安装之后遇到的问题</p>
-<h2 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h2><h3 id="1-配置-makefile-问题记录"><a href="#1-配置-makefile-问题记录" class="headerlink" title="1. 配置 makefile 问题记录:"></a>1. 配置 makefile 问题记录:</h3><hr>
-<ul>
-<li>上面的指令执行完成之后可能会报错</li>
+<h2 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h2><h3 id="1-配置-makefile-问题记录"><a href="#1-配置-makefile-问题记录" class="headerlink" title="1. 配置 makefile 问题记录:"></a>1. 配置 makefile 问题记录:</h3><ul>
+<li>执行<code>configure</code>时会遇到错误</li>
 </ul>
-<hr>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ERROR: libx264 not found</span><br><span class="line">```    </span><br><span class="line">原因:  `libx264` 库没有找到      </span><br><span class="line">解决方法: 配置一下环境变量</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line"><span class="built_in">export</span> PKG_CONFIG_PATH=/home/capp/Downloads/x264/libs/lib/pkgconfig/</span><br></pre></td></tr></table></figure>
 
 <p>指定的路径就是<code>x264</code>的安装路径, 在<code>lib</code>目录下面的<code>pkgconfig</code>目录</p>
 <ul>
 <li>配置好环境变量再次执行<code>configure</code>指令, 还有可能会出错</li>
 </ul>
-<hr>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WARNING: using libfdk without pkg-config</span><br><span class="line">WARNING: using libx264 without pkg-config</span><br></pre></td></tr></table></figure>
 
 <p>这个问题我的解决方式是安装 <code>pkg-config</code> 这个安装包</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install pkg-config</span><br></pre></td></tr></table></figure>
 
 <p>在去执行 <code>configure</code> 就没有错误了</p>
-<h3 id="2-编译之后遇到的问题"><a href="#2-编译之后遇到的问题" class="headerlink" title="2. 编译之后遇到的问题"></a>2. 编译之后遇到的问题</h3><hr>
-<p>编译之后查看目标文件的链接情况 <code>ldd ffmpeg</code><br>看到的结果是有几个库没有找到链接库文件, 显示<code>xxx not found</code>, 但是库文件是存在的.<br>查找资料得知, 由于我们的编译安装路径是在自己的目录下, <code>ld</code> 链接找不到这个库文件, 需要将库的安装路径添加到 <code>ld config</code> 中.    </p>
+<h3 id="2-编译之后遇到的问题"><a href="#2-编译之后遇到的问题" class="headerlink" title="2. 编译之后遇到的问题"></a>2. 编译之后遇到的问题</h3><p><code>make</code>完成之后, 在使用<code>ffmpeg</code>时, 提示找不到库文件, 使用<code>ldd</code>命令查看目标文件的链接情况 <code>ldd ffmpeg</code><br>看到的结果是有几个库没有找到链接库文件, 显示<code>xxx not found</code>, 但是库文件是存在的.<br>查找资料得知, 由于我们的编译安装路径是在自己的目录下, <code>ld</code> 链接找不到这个库文件, 需要将库的安装路径添加到 <code>ld config</code> 中.    </p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编辑 /etc/ld.conf 文件</span></span><br><span class="line">vim /etc/ld.conf</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">include ld.so.conf.d/*.conf</span><br><span class="line">/home/capp/Downloads/x264/libs/lib</span><br><span class="line">/home/capp/Downloads/ffmpeg-n4.0.2/libs/lib</span><br></pre></td></tr></table></figure>
@@ -474,11 +470,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">map</a>
+                <a href="javascript:void(0)" class="js-tag color3">closure</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">closure</a>
+                <a href="javascript:void(0)" class="js-tag color5">mysqldump</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -494,7 +490,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">mysqldump</a>
+                <a href="javascript:void(0)" class="js-tag color4">map</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -518,11 +514,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vim</a>
+                <a href="javascript:void(0)" class="js-tag color5">x264</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">x264</a>
+                <a href="javascript:void(0)" class="js-tag color4">vim</a>
               </li>
             
             <div class="clearfix"></div>
