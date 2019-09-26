@@ -6,19 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>write everything</title>
+  <title>redis brpop 获取不到数据 | write everything</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="golang内置的map并不是并发安全的, 当有多个goroutine并发读写时, 整个程序就会引起崩溃. golang也提供了能够并发读写的 map: sync.Map.">
+  <meta name="description" content="线上报了一个 bug, 有一部分回放视频打不开, 通过定位, 发现问题出现 redis: 生产者和消费者通过 redis 的 list 队列进行通信, 消费者使用 brpop 命令阻塞监听, 生产者发布任务, 但是消费者拿不到任务.">
+<meta name="keywords" content="redis,brpop,tcp keepalive">
 <meta property="og:type" content="article">
-<meta property="og:title" content="write everything">
-<meta property="og:url" content="http://yoursite.com/uncategorized/golang-syncmap.html">
+<meta property="og:title" content="redis brpop 获取不到数据">
+<meta property="og:url" content="http://yoursite.com/redis/redis-brpop.html">
 <meta property="og:site_name" content="write everything">
-<meta property="og:description" content="golang内置的map并不是并发安全的, 当有多个goroutine并发读写时, 整个程序就会引起崩溃. golang也提供了能够并发读写的 map: sync.Map.">
+<meta property="og:description" content="线上报了一个 bug, 有一部分回放视频打不开, 通过定位, 发现问题出现 redis: 生产者和消费者通过 redis 的 list 队列进行通信, 消费者使用 brpop 命令阻塞监听, 生产者发布任务, 但是消费者拿不到任务.">
 <meta property="og:locale" content="c & golang">
-<meta property="og:updated_time" content="2019-08-10T09:21:43.891Z">
+<meta property="og:image" content="http://yoursite.com/image/redis-brpop-wireshark-1.png">
+<meta property="og:image" content="http://yoursite.com/image/redis-brpop-wireshark-2.png">
+<meta property="og:image" content="http://yoursite.com/image/redis-brpop-wireshark-3.png">
+<meta property="og:updated_time" content="2019-09-26T06:50:14.073Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="write everything">
-<meta name="twitter:description" content="golang内置的map并不是并发安全的, 当有多个goroutine并发读写时, 整个程序就会引起崩溃. golang也提供了能够并发读写的 map: sync.Map.">
+<meta name="twitter:title" content="redis brpop 获取不到数据">
+<meta name="twitter:description" content="线上报了一个 bug, 有一部分回放视频打不开, 通过定位, 发现问题出现 redis: 生产者和消费者通过 redis 的 list 队列进行通信, 消费者使用 brpop 命令阻塞监听, 生产者发布任务, 但是消费者拿不到任务.">
+<meta name="twitter:image" content="http://yoursite.com/image/redis-brpop-wireshark-1.png">
   
     <link rel="alternative" href="/atom.xml" title="write everything" type="application/atom+xml">
   
@@ -168,18 +173,76 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-golang-syncmap" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-redis-brpop" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      redis brpop 获取不到数据
+    </h1>
+  
+
+        
+        <a href="/redis/redis-brpop.html" class="archive-article-date">
+  	<time datetime="2019-09-23T04:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-23</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><code>golang</code>内置的<code>map</code>并不是并发安全的, 当有多个<code>goroutine</code>并发读写时, 整个程序就会引起崩溃. <code>golang</code>也提供了能够并发读写的 map: <code>sync.Map</code>.</p>
+        <p>线上报了一个 bug, 有一部分回放视频打不开, 通过定位, 发现问题出现 redis: 生产者和消费者通过 redis 的 list 队列进行通信, 消费者使用 brpop 命令阻塞监听, 生产者发布任务, 但是消费者拿不到任务.</p>
 <a id="more"></a>
 
-<h3 id="sync-Map定义"><a href="#sync-Map定义" class="headerlink" title="sync.Map定义"></a>sync.Map定义</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Map is like a Go map[interface&#123;&#125;]interface&#123;&#125; but is safe for concurrent use</span></span><br><span class="line"><span class="comment">// by multiple goroutines without additional locking or coordination.</span></span><br><span class="line"><span class="comment">// Loads, stores, and deletes run in amortized constant time.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The Map type is specialized. Most code should use a plain Go map instead,</span></span><br><span class="line"><span class="comment">// with separate locking or coordination, for better type safety and to make it</span></span><br><span class="line"><span class="comment">// easier to maintain other invariants along with the map content.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The Map type is optimized for two common use cases: (1) when the entry for a given</span></span><br><span class="line"><span class="comment">// key is only ever written once but read many times, as in caches that only grow,</span></span><br><span class="line"><span class="comment">// or (2) when multiple goroutines read, write, and overwrite entries for disjoint</span></span><br><span class="line"><span class="comment">// sets of keys. In these two cases, use of a Map may significantly reduce lock</span></span><br><span class="line"><span class="comment">// contention compared to a Go map paired with a separate Mutex or RWMutex.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The zero Map is empty and ready for use. A Map must not be copied after first use.</span></span><br><span class="line"><span class="keyword">type</span> Map <span class="keyword">struct</span> &#123;</span><br><span class="line">	mu Mutex</span><br><span class="line"></span><br><span class="line">	<span class="comment">// read contains the portion of the map's contents that are safe for</span></span><br><span class="line">	<span class="comment">// concurrent access (with or without mu held).</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// The read field itself is always safe to load, but must only be stored with</span></span><br><span class="line">	<span class="comment">// mu held.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Entries stored in read may be updated concurrently without mu, but updating</span></span><br><span class="line">	<span class="comment">// a previously-expunged entry requires that the entry be copied to the dirty</span></span><br><span class="line">	<span class="comment">// map and unexpunged with mu held.</span></span><br><span class="line">	read atomic.Value <span class="comment">// readOnly</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// dirty contains the portion of the map's contents that require mu to be</span></span><br><span class="line">	<span class="comment">// held. To ensure that the dirty map can be promoted to the read map quickly,</span></span><br><span class="line">	<span class="comment">// it also includes all of the non-expunged entries in the read map.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Expunged entries are not stored in the dirty map. An expunged entry in the</span></span><br><span class="line">	<span class="comment">// clean map must be unexpunged and added to the dirty map before a new value</span></span><br><span class="line">	<span class="comment">// can be stored to it.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// If the dirty map is nil, the next write to the map will initialize it by</span></span><br><span class="line">	<span class="comment">// making a shallow copy of the clean map, omitting stale entries.</span></span><br><span class="line">	dirty <span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry</span><br><span class="line"></span><br><span class="line">	<span class="comment">// misses counts the number of loads since the read map was last updated that</span></span><br><span class="line">	<span class="comment">// needed to lock mu to determine whether the key was present.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Once enough misses have occurred to cover the cost of copying the dirty</span></span><br><span class="line">	<span class="comment">// map, the dirty map will be promoted to the read map (in the unamended</span></span><br><span class="line">	<span class="comment">// state) and the next store to the map will make a new dirty copy.</span></span><br><span class="line">	misses <span class="keyword">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将线上的问题拿到测试环境, 复现问题.<br>测试环境 redis 的版本:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis server v=4.0.6 sha=00000000:0 malloc=jemalloc-4.0.3 bits=64 build=ff42f75b32df2a75</span><br></pre></td></tr></table></figure>
 
-<p>从注释中我们</p>
+<p>测试 case 自己编写了一个单元测试, 代码如下:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestCountSet</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	RedisPool()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++ &#123;</span><br><span class="line">		task, err := PopTaskQueue()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(err.Error())</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			fmt.Println(<span class="keyword">string</span>(task))</span><br><span class="line">		&#125;</span><br><span class="line">		time.Sleep(<span class="number">2</span> * time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// TaskQueue pop</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PopTaskQueue</span><span class="params">()</span> <span class="params">([]<span class="keyword">byte</span>, error)</span></span> &#123;</span><br><span class="line">	conn := RedisPool().Get()</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">	inters, err := redis.Values(conn.Do(<span class="string">"brpop"</span>, <span class="string">"TaskQueue1"</span>, <span class="number">0</span>))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> redis.Bytes(inters[<span class="number">1</span>], <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>redis 客户端使用的是 <code>github.com/gomodule/redigo/redis</code>, 连接池建立过程如下</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RedisPool</span></span><br><span class="line"><span class="keyword">var</span> pool *redis.Pool</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">RedisPool</span><span class="params">()</span> *<span class="title">redis</span>.<span class="title">Pool</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> pool == <span class="literal">nil</span> &#123;</span><br><span class="line">		pool = NewPool()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> pool</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPool</span><span class="params">()</span> *<span class="title">redis</span>.<span class="title">Pool</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;redis.Pool&#123;</span><br><span class="line">		MaxIdle:     <span class="number">10</span>,</span><br><span class="line">		MaxActive:   <span class="number">100</span>,</span><br><span class="line">		IdleTimeout: time.Duration(<span class="number">3000</span>) * time.Second,</span><br><span class="line">		Dial: <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="params">(redis.Conn, error)</span></span> &#123;</span><br><span class="line">			c, err := redis.Dial(<span class="string">"tcp"</span>, <span class="string">"127.0.0.1:6006"</span>)</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> redisCfg.Password != <span class="string">""</span> &#123;</span><br><span class="line">				<span class="keyword">if</span> _, err := c.Do(<span class="string">"AUTH"</span>, <span class="string">"apssword"</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">					c.Close()</span><br><span class="line">					<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> c, err</span><br><span class="line">		&#125;,</span><br><span class="line">		TestOnBorrow: <span class="function"><span class="keyword">func</span><span class="params">(c redis.Conn, t time.Time)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">			<span class="keyword">if</span> time.Since(t) &lt; time.Minute &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">			&#125;</span><br><span class="line">			_, err := c.Do(<span class="string">"PING"</span>)</span><br><span class="line">			<span class="keyword">return</span> err</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="开始测试"><a href="#开始测试" class="headerlink" title="开始测试"></a>开始测试</h3><p><code>go test -v -timeout=10000s -run TestCountSet</code> 测试代码跑起来都正常, 使用 <code>lpush TaskQueue1 1</code> 发布消息也能正常收到, <code>client list</code> 命令打印如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=83500 addr=10.11.0.2:50056 fd=8 name= age=6 idle=6 flags=b db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=0 omem=0 events=r cmd=brpop</span><br></pre></td></tr></table></figure>
+
+<p>但是在等待一段时间后, 一般是大于一分钟, 问题就出现了.  首先使用 <code>client list</code> 命令检查一下客户端连接状态:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=83500 addr=10.11.0.2:50056 fd=8 name= age=125 idle=125 flags=b db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=0 omem=0 events=r cmd=brpop</span><br></pre></td></tr></table></figure>
+
+<p>flags 状态位表明连接还处于阻塞状态;  之后, 通过 <code>lpush</code> 命令发送一条消息, 但是此时客户端并没有收到消息, 而 <code>client list</code> 命令的输出结果发生了变化:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=83500 addr=10.11.0.2:50056 fd=8 name= age=177 idle=3 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=0 omem=0 events=r cmd=brpop</span><br></pre></td></tr></table></figure>
+
+<p><code>flag</code> 由 <code>b</code> 变为了 <code>N</code>, 该字段表示非阻塞命令, 而 <code>b</code> 则表示阻塞的命令.<br>这个就很奇怪, 一发消息, 阻塞的客户端状态就不对了……??</p>
+<h4 id="wireshark-抓包"><a href="#wireshark-抓包" class="headerlink" title="wireshark 抓包"></a>wireshark 抓包</h4><p>测试程序连接 redis, 阻塞消费;  在终端中打开 redis 客户端连接, 发布消息:<br>通过 wireshark 抓包发现, 即使是客户端, 在等待一段时间后, 使用 <code>lpush</code> 发布消息, 之前的连接也会被断掉, wireshark 抓包结果如下:<br><img src="/image/redis-brpop-wireshark-1.png" alt><br>可以发现, 客户端发消息之前的端口是 <code>50445</code>, 但是之后 redis 服务端回复了一个 <code>RST</code> 消息, 表明客户端试图发送数据到一个不存在的连接上.</p>
+<blockquote>
+<p>疑问: reids 服务端什么时候把连接关掉了, 而且客户端没有收到 <code>FIN</code>?<br>答: 这个应该不是关掉了, reids….</p>
+</blockquote>
+<p>这些都不重要, 重要的是 redis 服务端并没有给 <code>50056</code> 端口发送消息……..</p>
+<p>为什么没有发消息?????</p>
+<h4 id="检查一下-redis-代码…"><a href="#检查一下-redis-代码…" class="headerlink" title="检查一下 redis 代码…."></a>检查一下 redis 代码….</h4><p>redis 服务端会把阻塞的客户端添加到一个链表中, 并且会定期检查链表中客户端的过期情况. <a href="https://blog.csdn.net/cszskkk1/article/details/53700426" target="_blank" rel="noopener">搬运一下</a><br>redis 对客户端定期检查部分代码: </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Check for timeouts. Returns non-zero if the client was terminated.</span></span><br><span class="line"><span class="comment"> * The function gets the current time in milliseconds as argument since</span></span><br><span class="line"><span class="comment"> * it gets called multiple times in a loop, so calling gettimeofday() for</span></span><br><span class="line"><span class="comment"> * each iteration would be costly without any actual gain. */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">clientsCronHandleTimeout</span><span class="params">(client *c, <span class="keyword">mstime_t</span> now_ms)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">time_t</span> now = now_ms/<span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (server.maxidletime &amp;&amp;</span><br><span class="line">        !(c-&gt;flags &amp; CLIENT_SLAVE) &amp;&amp;    <span class="comment">/* no timeout for slaves */</span></span><br><span class="line">        !(c-&gt;flags &amp; CLIENT_MASTER) &amp;&amp;   <span class="comment">/* no timeout for masters */</span></span><br><span class="line">        !(c-&gt;flags &amp; CLIENT_BLOCKED) &amp;&amp;  <span class="comment">/* no timeout for BLPOP */</span></span><br><span class="line">        !(c-&gt;flags &amp; CLIENT_PUBSUB) &amp;&amp;   <span class="comment">/* no timeout for Pub/Sub clients */</span></span><br><span class="line">        (now - c-&gt;lastinteraction &gt; server.maxidletime))</span><br><span class="line">    &#123;</span><br><span class="line">        serverLog(LL_VERBOSE,<span class="string">"Closing idle client"</span>);</span><br><span class="line">        freeClient(c);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c-&gt;flags &amp; CLIENT_BLOCKED) &#123;</span><br><span class="line">        <span class="comment">/* Blocked OPS timeout is handled with milliseconds resolution.</span></span><br><span class="line"><span class="comment">         * However note that the actual resolution is limited by</span></span><br><span class="line"><span class="comment">         * server.hz. */</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (c-&gt;bpop.timeout != <span class="number">0</span> &amp;&amp; c-&gt;bpop.timeout &lt; now_ms) &#123;</span><br><span class="line">            <span class="comment">/* Handle blocking operation specific timeout. */</span></span><br><span class="line">            replyToBlockedClientTimedOut(c);</span><br><span class="line">            unblockClient(c);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (server.cluster_enabled) &#123;</span><br><span class="line">            <span class="comment">/* Cluster: handle unblock &amp; redirect of clients blocked</span></span><br><span class="line"><span class="comment">             * into keys no longer served by this server. */</span></span><br><span class="line">            <span class="keyword">if</span> (clusterRedirectBlockedClientIfNeeded(c))</span><br><span class="line">                unblockClient(c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>首先 <code>server.maxidletime</code> 值是 <code>redis.conf</code> 配置文件中的 <code>timeout</code> 的值, 该值为 0</li>
+<li><code>c-&gt;bpop.timeout</code> 该值没有设置超时时间, 值为 0</li>
+<li><code>server.cluster_enabled</code> 集群功能默认不开启, 值为 0</li>
+</ol>
+<p>应该不是这块的问题..</p>
+<h3 id="再次测试"><a href="#再次测试" class="headerlink" title="再次测试"></a>再次测试</h3><p>另外在测试时, 还发现: 只有在客户端发送 <code>lpush</code> 指令之后, 连接的状态才会发生改变. 所以后来直接开两个客户端进行测试:</p>
+<ul>
+<li>客户端<code>A</code>运行 <code>brpop mylist 0</code>, 之后客户端<code>B</code>立即运行 <code>lpush mylist 0</code>推送消息; 测试发现, 客户端<code>A</code>可以收到消息, 运行<code>CLIENT LIST</code>指令发现客户端<code>A</code>的连接状态由 <code>b</code> 变为了 <code>N</code>.</li>
+<li>再次改变测试方法, 还是两个客户端, 只不过客户端<code>A</code>运行之后, 客户端<code>B</code>等待 <code>2</code>分钟在去发布消息: 客户单<code>A</code>没有再收到消息…..  同样的, wireshark 抓包并没有发现 <code>redis server</code> 给客户端<code>A</code>发包.</li>
+</ul>
+<p>在测试时发现另外一个比较有意思的现象: 如果客户端<code>A</code>长时间阻塞等待是不会收到<code>B</code>发送的消息;  但是如果客户端<code>A</code>发送<code>TCP Keep-Alive</code>数据包保活之后, 客户端<code>B</code>再递送消息, 此时<code>A</code>就会收到这个消息.  (客户端<code>A</code>这里是一个测试客户端)..<br>可以通过 wireshark 抓包看到:<br><img src="/image/redis-brpop-wireshark-2.png" alt></p>
+<p>客户端<code>B</code>先递送消息, 然后等待<code>TCP Keep-Alive</code>心跳包:<br><img src="/image/redis-brpop-wireshark-3.png" alt><br>从这张图可以看到, <code>TCP Keep-Alive</code>心跳包出现之后, 有一个从 redis服务端(6001) -&gt; 客户端(53477) 的一个重传包, 而这个重传包, 就是那个消息.</p>
+<blockquote>
+<p>到这里就有一个奇怪的问题:<br>从上面的测试结果来看, <code>redis server</code> 是很正常的, 将连接的状态从阻塞变为非阻塞也没有问题, 奇怪的是<code>redis server</code>发送的消息为什么没有到达客户端??  并且还是在连接没有断开的情况下(因为<code>TCP Keep-Alive</code>心跳包还能够正常收发).</p>
+</blockquote>
+<p>由于我们的服务器是部署在阿里云, 猜测可能是阿里云的问题????<br>后来在知乎上看到了<a href="https://zhuanlan.zhihu.com/p/52622856" target="_blank" rel="noopener">这篇文章</a>, 才确定确实是阿里云的问题.</p>
+<p>验证这个问题并不难, 用 golang 写个 tcp 的测试 demo, 服务端放在服务器上, 本地跑客户端:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
 
       
@@ -187,7 +250,37 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">brpop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">tcp keepalive</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/redis//" class="article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -237,7 +330,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/uncategorized/golang-syncmap.html" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/redis/redis-brpop.html" alt="微信分享二维码">
     </div>
 </div>
 
@@ -251,18 +344,9 @@
   
 <nav id="article-nav">
   
-    <a href="/golang/golang-memory-management.html" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          golang 之 内存管理
-        
-      </div>
-    </a>
   
-  
-    <a href="/golang/golang-defer-panic-recover.html" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">golang 之 defer panic recover</div>
+    <a href="/golang/goalng-handle-image.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">golang 图片处理</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -289,7 +373,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#sync-Map定义"><span class="toc-number">1.</span> <span class="toc-text">sync.Map定义</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#开始测试"><span class="toc-number">1.</span> <span class="toc-text">开始测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#wireshark-抓包"><span class="toc-number">1.1.</span> <span class="toc-text">wireshark 抓包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#检查一下-redis-代码…"><span class="toc-number">1.2.</span> <span class="toc-text">检查一下 redis 代码….</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#再次测试"><span class="toc-number">2.</span> <span class="toc-text">再次测试</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -401,6 +485,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">image</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">火焰图</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">closure</a>
               </li>
              
@@ -422,6 +514,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">内存泄漏</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">syncmap</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -465,15 +561,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">brpop</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">tcp keepalive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">x264</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">内存管理</a>
+                <a href="javascript:void(0)" class="js-tag color4">tcmalloc</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">tcmalloc</a>
+                <a href="javascript:void(0)" class="js-tag color5">内存管理</a>
               </li>
             
             <div class="clearfix"></div>
