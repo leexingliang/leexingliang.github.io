@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://yoursite.com/image/redis-brpop-wireshark-1.png">
 <meta property="og:image" content="http://yoursite.com/image/redis-brpop-wireshark-2.png">
 <meta property="og:image" content="http://yoursite.com/image/redis-brpop-wireshark-3.png">
-<meta property="og:updated_time" content="2019-09-26T06:50:14.073Z">
+<meta property="og:updated_time" content="2019-09-29T12:12:07.282Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis brpop 获取不到数据">
 <meta name="twitter:description" content="线上报了一个 bug, 有一部分回放视频打不开, 通过定位, 发现问题出现 redis: 生产者和消费者通过 redis 的 list 队列进行通信, 消费者使用 brpop 命令阻塞监听, 生产者发布任务, 但是消费者拿不到任务.">
@@ -240,9 +240,19 @@
 <blockquote>
 <p>到这里就有一个奇怪的问题:<br>从上面的测试结果来看, <code>redis server</code> 是很正常的, 将连接的状态从阻塞变为非阻塞也没有问题, 奇怪的是<code>redis server</code>发送的消息为什么没有到达客户端??  并且还是在连接没有断开的情况下(因为<code>TCP Keep-Alive</code>心跳包还能够正常收发).</p>
 </blockquote>
-<p>由于我们的服务器是部署在阿里云, 猜测可能是阿里云的问题????<br>后来在知乎上看到了<a href="https://zhuanlan.zhihu.com/p/52622856" target="_blank" rel="noopener">这篇文章</a>, 才确定确实是阿里云的问题.</p>
+<p>由于我们的服务器是部署在阿里云, 猜测可能是阿里云的问题????<br>后来在知乎上看到了<a href="https://zhuanlan.zhihu.com/p/52622856" target="_blank" rel="noopener">这篇文章</a>.</p>
 <p>验证这个问题并不难, 用 golang 写个 tcp 的测试 demo, 服务端放在服务器上, 本地跑客户端:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// server.go</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	listener, err := net.Listen(<span class="string">"tcp"</span>, <span class="string">":8984"</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		conn, err := listener.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="built_in">panic</span>(err)</span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Println(<span class="string">"new connection, and write something"</span>)</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> result = <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">10</span>)</span><br><span class="line">		conn.Read(result)</span><br><span class="line">		fmt.Println(<span class="string">"receive data:"</span> + <span class="keyword">string</span>(result))</span><br><span class="line">		fmt.Println(<span class="string">"\nsend data"</span>)</span><br><span class="line"></span><br><span class="line">		conn.Write([]<span class="keyword">byte</span>(<span class="string">"this is test"</span>))</span><br><span class="line">		time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// client.go</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	conn, err := net.Dial(<span class="string">"tcp"</span>, <span class="string">"10.11.0.103:8984"</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	time.Sleep(<span class="number">300</span> * time.Second)</span><br><span class="line">	conn.Write([]<span class="keyword">byte</span>(<span class="string">"123"</span>))</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> result = <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">100</span>)</span><br><span class="line">	conn.Read(result)</span><br><span class="line">	fmt.Println(<span class="keyword">string</span>(result))</span><br><span class="line">	<span class="keyword">select</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端和服务器建立连接之后, 客户端先休眠 5分钟, 发送点东西给服务端, 服务端在给一个回执. 测试中并没有出现消息读取不到的情况. 排除阿里云的问题….. what the fuck!!!</p>
+<p>有点找不到头绪了……</p>
+<p>找两台 pc, 在同一个局域网下, 一台运行 redis server, 一台跑 redis 测试客户端. 结果也没有发现这种问题. </p>
+<p>最终的原因还是没有找到…….<br>只能采用规避方案…………</p>
+<h3 id="规避方案"><a href="#规避方案" class="headerlink" title="规避方案"></a>规避方案</h3><ol>
+<li>客户端执行<code>brpop</code>指令时, 指定<code>timeout</code>时间</li>
+<li><code>redis server</code> 配置 <code>tcp keepalive</code>, 30s就行</li>
+</ol>
+
       
 
       
@@ -373,7 +383,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#开始测试"><span class="toc-number">1.</span> <span class="toc-text">开始测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#wireshark-抓包"><span class="toc-number">1.1.</span> <span class="toc-text">wireshark 抓包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#检查一下-redis-代码…"><span class="toc-number">1.2.</span> <span class="toc-text">检查一下 redis 代码….</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#再次测试"><span class="toc-number">2.</span> <span class="toc-text">再次测试</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#开始测试"><span class="toc-number">1.</span> <span class="toc-text">开始测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#wireshark-抓包"><span class="toc-number">1.1.</span> <span class="toc-text">wireshark 抓包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#检查一下-redis-代码…"><span class="toc-number">1.2.</span> <span class="toc-text">检查一下 redis 代码….</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#再次测试"><span class="toc-number">2.</span> <span class="toc-text">再次测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#规避方案"><span class="toc-number">3.</span> <span class="toc-text">规避方案</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -485,19 +495,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">image</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">火焰图</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">closure</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">map</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">image</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">火焰图</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -510,10 +520,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">recover</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">内存泄漏</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -530,6 +536,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">url</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">内存泄漏</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -553,6 +563,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">x264</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">udp</a>
               </li>
              
@@ -566,10 +580,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">tcp keepalive</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">x264</a>
               </li>
              
               <li class="article-tag-list-item">
